@@ -35,7 +35,7 @@ onMounted(async () => {
     <h3 v-if="book_info">简介: {{ book_info.desc }}</h3>
     <h3 v-if="book_info">章节: </h3>
     <button>
-        <a :href="`https://axum.169564.xyz/book/download/${book_id}`">下载</a>
+        <a :href="`http://127.0.0.1:8000/book/download/${book_id}`">下载</a>
     </button>
     <ul v-if="book_info">
         <li v-for="chapter_info in book_info.chapter" :key="chapter_info[0]">

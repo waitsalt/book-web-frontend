@@ -95,7 +95,7 @@ const uploadBook = async () => {
     <br><br>
 
     <button @click="uploadBook">下载Json</button>
-    <form action="https://axum.169564.xyz/book/upload" method="post" enctype="multipart/form-data">
+    <form action="http://127.0.0.1:8000/book/upload" method="post" enctype="multipart/form-data">
         <label>
             上传文件(仅支持Json)
             <input type="file" name="file">

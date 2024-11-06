@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const AxiosInstance = axios.create({
-    baseURL: 'https://axum.169564.xyz',
+    baseURL: 'http://127.0.0.1:8000',
     timeout: 5000
 })
 
