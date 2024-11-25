@@ -84,13 +84,6 @@ button {
     font-style: italic;
 }
 
-/* 鼠标聚焦时的输入框样式 */
-/* .input:focus {
-    background-color: #fff;
-    color: #000;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
-} */
-
 /* 图标按钮样式 */
 .icon {
     position: relative;

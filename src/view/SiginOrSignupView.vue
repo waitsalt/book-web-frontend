@@ -3,6 +3,9 @@ import { onMounted, ref } from 'vue';
 import { signin } from '@/api/signin';
 import { captcha_image as get_c_image } from '@/api/get_captcha_image';
 import { generateUUID } from '@/api/uuid';
+import router from '@/util/router';
+import request from '@/util/request';
+import { get_user_info } from '@/api/user_info';
 
 // 更改视图
 const switch_login = ref(false);
@@ -19,7 +22,13 @@ const captcha_image_key = ref(generateUUID());
 const captcha_image = ref('');
 const captcha_image_data = ref('');
 async function user_signin() {
-    let data = await signin(user_name.value, user_password.value, captcha_image.value, captcha_image_key.value);
+    try {
+        let data = await signin(user_name.value, user_password.value, captcha_image.value, captcha_image_key.value);
+        if data.
+    }
+    catch {
+        router.push("/user")
+    }
 }
 
 // 注册
@@ -69,7 +78,24 @@ async function get_captcha_image() {
     let data = await get_c_image(captcha_image_key.value);
     captcha_image_data.value = data.data;
 }
+// 检查用户登录状态
+const checkUserLogin = async () => {
+    const token = localStorage.getItem('book-web-auth-token');
+    if (!token) {
+        return;
+    }
+    request.defaults.headers.common['Authorization'] = token;
+    try {
+        const res = await get_user_info();
+        router.push("/user")
+    }
+    catch {
+    }
+};
 
+onMounted(async () => {
+    await checkUserLogin();
+});
 
 // 自动运行
 onMounted(() => {

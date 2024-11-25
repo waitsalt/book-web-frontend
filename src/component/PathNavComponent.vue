@@ -8,11 +8,8 @@ let hideTimeout = null; // 定时器变量
 
 // 鼠标进入时显示卡片，并清除隐藏卡片的定时器
 const handleMouseEnter = () => {
-    if (hideTimeout) {
-        clearTimeout(hideTimeout);
-        hideTimeout = null;
-    }
-    isHiding.value = false; // 停止消失动画
+    clearTimeout(hideTimeout); // 清除隐藏定时器
+    isHiding.value = false;
     showCard.value = true;
 };
 
@@ -21,21 +18,21 @@ const handleMouseLeave = () => {
     hideTimeout = setTimeout(() => {
         isHiding.value = true; // 启动消失动画
         setTimeout(() => {
-            showCard.value = false; // 动画结束后隐藏卡片
-            isHiding.value = false; // 重置消失状态
-        }, 300); // 动画持续时间为 300ms
-    }, 700); // 延迟 1 秒后启动动画
+            showCard.value = false;
+            isHiding.value = false; // 重置状态
+        }, 300); // 动画持续时间
+    }, 700); // 延迟隐藏
 };
 
-const goto_home = () => {
-    router.push("/")
-}
+const gotoHome = () => {
+    router.push('/');
+};
 </script>
 
 <template>
     <div class="floating-nav" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
         <!-- 圆形按钮 -->
-        <div class="floating-btn" @click="goto_home">
+        <div class="floating-btn" @click="gotoHome">
             <img src="/src/public/web.png" alt="Nav" class="nav-icon" />
         </div>
 
@@ -45,7 +42,6 @@ const goto_home = () => {
         </div>
     </div>
 </template>
-
 
 <style scoped>
 .floating-nav {
@@ -75,18 +71,11 @@ const goto_home = () => {
 }
 
 .nav-icon {
-    position: absolute;
-    /* 确保图片完全覆盖父容器 */
     width: 100%;
-    /* 图片宽度适应按钮大小 */
     height: 100%;
-    /* 图片高度适应按钮大小 */
     object-fit: cover;
-    /* 保持图片比例，同时填充容器 */
     border-radius: 50%;
-    /* 确保图片也为圆形 */
     pointer-events: none;
-    /* 防止图片阻挡鼠标事件 */
 }
 
 .floating-card {
@@ -102,7 +91,6 @@ const goto_home = () => {
     animation: slideIn 0.3s ease forwards;
 }
 
-/* 卡片显示动画 */
 @keyframes slideIn {
     from {
         opacity: 0;
@@ -115,7 +103,6 @@ const goto_home = () => {
     }
 }
 
-/* 卡片消失动画 */
 .fade-out {
     animation: slideOut 0.3s ease forwards;
 }

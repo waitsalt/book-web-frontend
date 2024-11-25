@@ -10,6 +10,8 @@ import UserNavComponent from './component/UserNavComponent.vue';
     <PathNavComponent />
     <UserNavComponent />
     <SearchComponent />
+  </div>
+  <div class="app-view">
     <RouterView />
   </div>
 </template>
@@ -28,4 +30,10 @@ import UserNavComponent from './component/UserNavComponent.vue';
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   /* Adds shadow for better visibility */
 }
+
+/* 
+.app-view {
+  position: fixed;
+  top: 60px;
+} */
 </style>

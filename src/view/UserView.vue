@@ -2,32 +2,71 @@
 import { get_user_info } from '@/api/user_info';
 import request from '@/util/request';
 import router from '@/util/router';
-import type { PublicUser } from '@/util/types';
-import { onMounted, ref } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 
-const user_info = ref<PublicUser>()
+// 导航栏选项
+const navItems = [
+    { label: '收藏', component: 'CollectComponent' },
+    { label: '历史', component: 'HistoryComponent' },
+];
 
-const check_user_login = async () => {
-    let token = localStorage.getItem("book-web-auth-token");
-    if (token === null || token === '') {
-        router.push("/signin");
+// 当前激活索引
+const activeIndex = ref(0);
+
+// 下划线样式
+const underlineStyle = ref({
+    left: '0px',
+    width: '0px',
+});
+
+// 更新下划线位置
+const moveUnderline = (index: number) => {
+    const item = document.querySelectorAll('.nav-item')[index] as HTMLElement;
+    underlineStyle.value = {
+        left: `${item.offsetLeft}px`,
+        width: `${item.offsetWidth}px`,
+    };
+};
+
+// 重置下划线到当前激活项
+const resetUnderline = () => {
+    moveUnderline(activeIndex.value);
+};
+
+// 切换选项
+const changeTab = (index: number) => {
+    activeIndex.value = index;
+    moveUnderline(index);
+};
+
+
+// 检查用户登录状态
+const checkUserLogin = async () => {
+    const token = localStorage.getItem('book-web-auth-token');
+    if (!token || token === '') {
+        router.push('/signin')
         return;
     }
-    console.log(token);
     request.defaults.headers.common['Authorization'] = token;
-
-    let res = await get_user_info();
-    user_info.value = res.data;
-    console.log(user_info.value?.user_email);
-
-}
-
+    try {
+        const res = await get_user_info();
+    }
+    catch {
+        router.push("/signin")
+    }
+};
 onMounted(async () => {
-    await check_user_login();
+    await checkUserLogin()
 })
-
 </script>
 
+
+
 <template>
-    <h1>User</h1>
+    <div class="container">
+    </div>
 </template>
+
+
+
+<style scoped></style>
