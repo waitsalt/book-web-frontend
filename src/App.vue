@@ -31,9 +31,9 @@ import UserNavComponent from './component/UserNavComponent.vue';
   /* Adds shadow for better visibility */
 }
 
-/* 
+
 .app-view {
   position: fixed;
   top: 60px;
-} */
+}
 </style>

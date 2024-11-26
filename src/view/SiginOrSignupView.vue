@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
-import { signin } from '@/api/signin';
-import { captcha_image as get_c_image } from '@/api/get_captcha_image';
-import { generateUUID } from '@/api/uuid';
+import { signin } from '@/api/user/signin';
+import { captcha_image as get_c_image } from '@/api/util/get_captcha_image';
+import { generateUUID } from '@/api/util/uuid';
 import router from '@/util/router';
 import request from '@/util/request';
-import { get_user_info } from '@/api/user_info';
+import { get_user_info } from '@/api/user/user_info';
 
 // 更改视图
 const switch_login = ref(false);
@@ -24,7 +24,6 @@ const captcha_image_data = ref('');
 async function user_signin() {
     try {
         let data = await signin(user_name.value, user_password.value, captcha_image.value, captcha_image_key.value);
-        if data.
     }
     catch {
         router.push("/user")

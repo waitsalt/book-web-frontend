@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { get_user_info } from '@/api/user_info';
+import { get_user_info } from '@/api/user/user_info';
 import request from '@/util/request';
 import router from '@/util/router';
 import { ref, computed, onMounted } from 'vue';

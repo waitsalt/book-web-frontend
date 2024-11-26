@@ -4,4 +4,4 @@ import router from './util/router'
 import "./public/common.css"
 import pinia from './store'
 
-createApp(App).use(router).use(pinia).mount('#app')
+createApp(App).use(pinia).use(router).mount('#app')

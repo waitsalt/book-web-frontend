@@ -1,3 +1,16 @@
+<script setup>
+import { ref } from 'vue';
+
+const searchQuery = ref('');
+const handleSearch = () => {
+    if (searchQuery.value.trim() === '') {
+        alert('请输入搜索内容！');
+        return;
+    }
+    alert(`搜索内容: ${searchQuery.value}`);
+};
+</script>
+
 <template>
     <div class="input-container">
         <input type="text" v-model="searchQuery" class="input" @keyup.enter="handleSearch" placeholder="请输入关键词" />
@@ -18,18 +31,6 @@
     </div>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-
-const searchQuery = ref('');
-const handleSearch = () => {
-    if (searchQuery.value.trim() === '') {
-        alert('请输入搜索内容！');
-        return;
-    }
-    alert(`搜索内容: ${searchQuery.value}`);
-};
-</script>
 
 <style scoped>
 /* 美化按钮样式 */
