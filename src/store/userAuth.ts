@@ -7,9 +7,10 @@ type State = {
 }
 
 const useUserAuthStore = defineStore("userAuth", {
-    state: () => ({
+    state: (): State => ({
         userAuth: {
-            token: '',
+            access_token: '',
+            refresh_token: '',
         }
     }),
     actions: {

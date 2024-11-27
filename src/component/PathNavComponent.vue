@@ -1,121 +1,152 @@
-<script setup>
+<script lang="ts" setup>
 import router from '@/util/router';
 import { ref } from 'vue';
+import { AiOutlineMenu } from 'vue-icons-plus/ai';
 
-const showCard = ref(false); // 控制卡片显示/隐藏
-const isHiding = ref(false); // 控制卡片消失动画
-let hideTimeout = null; // 定时器变量
+const isHovered = ref({
+    icon: false,
+    card: false,
+});
 
-// 鼠标进入时显示卡片，并清除隐藏卡片的定时器
-const handleMouseEnter = () => {
-    clearTimeout(hideTimeout); // 清除隐藏定时器
-    isHiding.value = false;
-    showCard.value = true;
+const iconConfig = ref({
+    color: 'white',
+    size: 30,
+});
+
+const hoverTimeout = ref(700); // Hover 延时设置，控制显示卡片和隐藏卡片的时间
+
+// 更新图标状态
+const updateIconState = (isHoveredIcon: boolean) => {
+    iconConfig.value.color = isHoveredIcon ? '#284B63' : 'white';
 };
 
-// 鼠标离开时启动隐藏卡片的定时器
-const handleMouseLeave = () => {
-    hideTimeout = setTimeout(() => {
-        isHiding.value = true; // 启动消失动画
-        setTimeout(() => {
-            showCard.value = false;
-            isHiding.value = false; // 重置状态
-        }, 300); // 动画持续时间
-    }, 700); // 延迟隐藏
+// 图标进入事件
+const enterPathIconEvent = () => {
+    isHovered.value.icon = true;
+    updateIconState(true);
 };
 
-const gotoHome = () => {
+// 图标离开事件
+const leavePathIconEvent = () => {
+    updateIconState(false);
+    setTimeout(() => { // 如果没有在卡片上
+        isHovered.value.icon = false; // 让图标变为非hover状态
+    }, hoverTimeout.value);
+};
+
+// 卡片进入事件
+const enterPathCardEvent = () => {
+    isHovered.value.card = true;
+};
+
+// 卡片离开事件
+const leavePathCardEvent = () => {
+    setTimeout(() => {
+        isHovered.value.card = false; // 离开卡片后延时隐藏
+    }, hoverTimeout.value);
+};
+
+// 跳转到首页
+const goToHome = () => {
     router.push('/');
 };
 </script>
 
 <template>
-    <div class="floating-nav" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
-        <!-- 圆形按钮 -->
-        <div class="floating-btn" @click="gotoHome">
-            <img src="/src/public/web.png" alt="Nav" class="nav-icon" />
+    <div class="container">
+        <!-- 路径图标 -->
+        <div class="path-icon" @mouseenter="enterPathIconEvent" @mouseleave="leavePathIconEvent" @click="goToHome">
+            <AiOutlineMenu :color="iconConfig.color" :size="iconConfig.size" />
         </div>
 
-        <!-- 浮动卡片 -->
-        <div v-if="showCard || isHiding" class="floating-card" :class="{ 'fade-out': isHiding }">
-            <p>这是浮动卡片的内容。</p>
+        <!-- 路径卡片 -->
+        <div class="path-card" :class="{ hidden: !(isHovered.icon || isHovered.card) }" @mouseenter="enterPathCardEvent"
+            @mouseleave="leavePathCardEvent">
+            <p>内容</p>
         </div>
     </div>
 </template>
 
 <style scoped>
-.floating-nav {
-    position: fixed;
-    left: 5px;
-    top: 5px;
-    z-index: 1000;
-}
-
-.floating-btn {
-    width: 50px;
-    height: 50px;
-    background-color: #007bff;
-    border-radius: 50%;
+/* 外层容器 */
+.container {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    background-color: #B4B8AB;
+    /* 添加渐变背景 */
 }
 
-.floating-btn:hover {
-    background-color: #0056b3;
-    transform: scale(1.1);
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
-}
-
-.nav-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+/* 路径图标样式 */
+.path-icon {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    height: 60px;
+    width: 60px;
     border-radius: 50%;
-    pointer-events: none;
+    background-color: #c2c2b2;
+    cursor: pointer;
+    border: 2px solid #eef0eb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    /* 添加阴影效果 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.floating-card {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    width: 200px;
-    background-color: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
-    animation: slideIn 0.3s ease forwards;
+.path-icon:hover {
+    transform: scale(1.1);
+    background-color: #B4B8AB;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    /* 放大时阴影效果 */
 }
 
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+/* 路径卡片样式 */
+.path-card {
+    position: fixed;
+    top: 90px;
+    left: 10px;
+    padding: 15px;
+    border-radius: 12px;
+    /* 更大的圆角 */
+    background-color: #f4f9e9;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    /* 添加阴影效果 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+    opacity: 0.9;
+    transition: opacity 0.3s ease;
 }
 
-.fade-out {
-    animation: slideOut 0.3s ease forwards;
+.path-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    /* 放大时阴影效果 */
 }
 
-@keyframes slideOut {
-    from {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.path-card p {
+    margin: 0;
+    padding: 0;
+    font-weight: 600;
+}
 
-    to {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+/* 控制路径卡片的隐藏 */
+.hidden {
+    display: none;
+}
+
+/* 添加平滑的透明度过渡 */
+.path-card {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.path-card:not(.hidden) {
+    opacity: 1;
 }
 </style>

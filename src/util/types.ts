@@ -33,7 +33,8 @@ type UserInfo = {
 };
 
 type UserAuth = {
-    token: string,
+    access_token: string,
+    refresh_token: string,
 }
 
 type Book = {

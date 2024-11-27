@@ -6,34 +6,22 @@ import UserNavComponent from './component/UserNavComponent.vue';
 </script>
 
 <template>
-  <div class="nav">
-    <PathNavComponent />
-    <UserNavComponent />
-    <SearchComponent />
-  </div>
-  <div class="app-view">
-    <RouterView />
-  </div>
+    <div class="container">
+        <div class="nav">
+            <PathNavComponent />
+            <SearchComponent />
+            <UserNavComponent />
+        </div>
+        <div class="app-view">
+            <RouterView />
+        </div>
+    </div>
 </template>
 
 <style scoped>
-.nav {
-  position: fixed;
-  /* Makes the navbar fixed at the top of the page */
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  /* Ensures the navbar stays on top of other elements */
-  background-color: white;
-  /* You can adjust this to match your design */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  /* Adds shadow for better visibility */
-}
-
-
-.app-view {
-  position: fixed;
-  top: 60px;
+/* 容器设置为列布局，最小高度100vh */
+.container {
+    display: flex;
+    background-color: #B4B8AB;
 }
 </style>

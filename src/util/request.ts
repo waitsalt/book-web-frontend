@@ -1,7 +1,4 @@
 import axios from "axios";
-import { useUserAuthStore } from "@/store/userAuth";
-
-const userAuthStore = useUserAuthStore();
 
 const base_url = "http://127.0.0.1:8000/api";
 
@@ -12,7 +9,6 @@ const request = axios.create({
 
 request.interceptors.request.use(
     (config) => {
-        config.headers.Authorization = `Bearer ${userAuthStore.userAuth.token}`;
         return config;
     }
 )
