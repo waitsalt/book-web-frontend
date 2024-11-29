@@ -1,5 +1,5 @@
+import type { UserInfo } from "@/model/user";
 import { defineStore } from "pinia";
-import type { UserInfo } from "@/util/types";
 
 type State = {
     userInfo: UserInfo,
@@ -18,7 +18,14 @@ const useUserInfoStore = defineStore('userInfo', {
             create_time: '',
             update_time: '',
         },
-    })
+    }),
+    actions: {
+        updateUserInfo(userInfo: UserInfo) {
+            this.userInfo = userInfo;
+        }
+    },
+    persist: true,
+
 })
 
 export { useUserInfoStore };

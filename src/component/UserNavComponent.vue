@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useUserInfoStore } from '@/store/userInfo';
 import router from '@/util/router';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { AiOutlineMenu, AiOutlineUser } from 'vue-icons-plus/ai';
 
 // 设置浮动卡片的显示与持续时间
@@ -51,9 +51,7 @@ const nologinIconConfig = ref({
 });
 
 const userInfoStore = useUserInfoStore();
-if (userInfoStore.userInfo.user_id != 0) {
-    userIsLogin.value = true;
-}
+
 
 const enterNologinUserIconEvent = () => {
     nologinIconConfig.value.color = '#284B63';
@@ -63,36 +61,71 @@ const leaveNologinUserIconEvent = () => {
     nologinIconConfig.value.color = 'white';
 };
 
+
+const checkUserIsHaveSignin = () => {
+    if (userInfoStore.userInfo.user_id != 0) {
+        userIsLogin.value = true;
+    }
+}
+
+onMounted(() => {
+    checkUserIsHaveSignin()
+})
+
+const userAvatarUrl = () => {
+    if (userInfoStore.userInfo.avatar_url == "") {
+        return '/src/public/web.png'
+    } else {
+        return userInfoStore.userInfo.avatar_url;
+    }
+}
 </script>
 
 <template>
     <div class="container">
         <!-- 用户图标 -->
-        <div v-if="userIsLogin" class="user-icon" @mouseenter="enterUserIconEvent" @mouseleave="leaveUserIconEvent"
+        <div v-if="userIsLogin" class="userIcon" @mouseenter="enterUserIconEvent" @mouseleave="leaveUserIconEvent"
             @click="goToUser">
-            <AiOutlineMenu :color="iconConfig.color" :size="iconConfig.size" />
+            <img :src="userAvatarUrl()" alt="">
         </div>
         <!-- 未登录时显示的登录按钮 -->
-        <div v-else class="nologin-user-icon" @mouseenter="enterNologinUserIconEvent"
+        <div v-else class="nologinUserIcon" @mouseenter="enterNologinUserIconEvent"
             @mouseleave="leaveNologinUserIconEvent" :style="{ color: nologinIconConfig.color }" @click="goToSignin">
             <AiOutlineUser :color="nologinIconConfig.color" :size="nologinIconConfig.size" /> <strong>登录</strong>
         </div>
     </div>
     <!-- 用户卡片 -->
-    <div class="user-card" :class="{ hidden: !(cursorInCard || cursorInIcon) }" @mouseenter="enterPathCardEvent"
+    <div class="userCard" :class="{ hidden: !(cursorInCard || cursorInIcon) }" @mouseenter="enterPathCardEvent"
         @mouseleave="leavePathCardEvent">
-        <p>用户信息</p>
+        <div class="userInfo">
+            <div><strong>用户:</strong> {{ userInfoStore.userInfo.user_name }}</div>
+            <div><strong>邮箱:</strong> {{ userInfoStore.userInfo.user_email }}</div>
+            <div><strong>等级:</strong> {{ userInfoStore.userInfo?.level }}</div>
+        </div>
+        <div class="pathNav">
+            <div class="setting" @click=""><span class="icon">⚙️</span> 设置</div>
+            <div class="collect" @click=""><span class="icon">⭐</span> 收藏</div>
+            <div class="history" @click=""><span class="icon">🕒</span> 历史</div>
+            <div class="upload" @click=""><span class="icon">⬆️</span> 上传</div>
+            <div class="manage" @click=""><span class="icon">📁</span> 管理</div>
+        </div>
+        <div class="userAction">
+            <div class="logout">
+                退出登陆
+            </div>
+        </div>
     </div>
 </template>
 
 <style scoped>
 /* 外部容器 */
 .container {
-    position: relative;
+    position: absolute;
+    z-index: 1002;
 }
 
 /* 用户图标样式 */
-.user-icon {
+.userIcon {
     position: fixed;
     top: 10px;
     right: 10px;
@@ -100,26 +133,26 @@ const leaveNologinUserIconEvent = () => {
     width: 60px;
     border-radius: 50%;
     background-color: #c2c2b2;
-    /* 渐变背景 */
     cursor: pointer;
     border: 2px solid #EEF0EB;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* 添加阴影 */
+    overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.user-icon:hover {
+.userIcon:hover {
     transform: scale(1.1);
     background-color: #B4B8AB;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    /* 高亮时增加阴影 */
+}
+
+.userIcon img {
+    width: 100%;
+    height: 100%;
 }
 
 /* 未登录时显示的登录按钮样式 */
-.nologin-user-icon {
+.nologinUserIcon {
     position: fixed;
     top: 10px;
     right: 15px;
@@ -137,33 +170,120 @@ const leaveNologinUserIconEvent = () => {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.nologin-user-icon:hover {
+.nologinUserIcon:hover {
     transform: scale(1.1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    /* 增加阴影效果 */
-}
-
-/* 用户卡片样式 */
-.user-card {
-    position: fixed;
-    top: 75px;
-    right: 10px;
-    padding: 15px;
-    background-color: #F4F9E9;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    /* 添加卡片阴影 */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.user-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    /* 高亮时的阴影 */
 }
 
 /* 隐藏卡片 */
 .hidden {
     display: none;
+}
+
+.userCard {
+    position: absolute;
+    top: 90px;
+    right: 10px;
+    width: 250px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    animation: slideIn 0.3s ease forwards;
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    transition: box-shadow 0.3s ease;
+}
+
+.userCard:hover {
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* 用户信息部分 */
+.userInfo {
+    padding: 10px;
+    margin: 15px;
+    font-size: 14px;
+    color: #333;
+    background-color: #f2f2f2;
+    border-radius: 5px;
+}
+
+.userInfo strong {
+    color: #5a5a5a;
+}
+
+/* 路径导航部分 */
+.pathNav {
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    padding: 16px;
+    background-color: #f2f2f2;
+    /* 背景色改为柔和的浅灰色 */
+    border-radius: 5px;
+}
+
+.pathNav div {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    color: #555;
+    border-radius: 5px;
+    padding: 8px;
+    /* 添加内边距 */
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.pathNav div:hover {
+    background-color: #e0e0e0;
+    color: #007bff;
+}
+
+.icon {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* 用户操作部分 */
+.userAction {
+    margin: 15px;
+    padding: 15px;
+    text-align: center;
+    background-color: #f9f9f9;
+    /* 添加背景色 */
+}
+
+/* 退出登录按钮 */
+.logout {
+    background: linear-gradient(45deg, #dc3545, #b52a37);
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.logout:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* 动画效果 */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 </style>

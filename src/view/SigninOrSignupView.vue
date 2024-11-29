@@ -1,8 +1,12 @@
 <script lang="ts" setup>
+import { postSignin } from '@/api/user/signin';
 import { getCaptchaImage } from '@/api/util/captchaImage';
 import { uuid } from '@/api/util/uuid';
+import type { UserAuth, UserClaims, UserSigninPayload } from '@/model/user';
+import { useUserAuthStore } from '@/store/userAuth';
 import { useUserInfoStore } from '@/store/userInfo';
 import router from '@/util/router';
+import { jwtDecode } from 'jwt-decode';
 import { onMounted, ref, watch } from 'vue';
 
 const isSignin = ref(true);
@@ -10,6 +14,16 @@ const captchaImageKey = ref(uuid());
 const captchaImageData = ref('');
 const btnText = ref('发送邮件');
 const disableBtn = ref(false);
+
+
+const userAuthStore = useUserAuthStore();
+const userInfoStore = useUserInfoStore();
+
+const userName = ref('');
+const userEmail = ref('');
+const userPassword = ref('');
+const captchaImage = ref('');
+const captchaEmail = ref('');
 
 // 获取当前路径并检查是否为登录页
 const localUrl = window.location.href;
@@ -19,9 +33,8 @@ const checkIsSignin = () => {
 };
 
 // 检查用户是否已登录
-const userInfoStore = useUserInfoStore();
 const checkUserIsHaveSignin = () => {
-    if (userInfoStore.userInfo.user_id !== 0) {
+    if (userInfoStore.userInfo.user_id != 0) {
         router.push('/user');
     }
 };
@@ -55,6 +68,21 @@ const sendEmailEvent = () => {
     }, 1000);
 };
 
+// 登陆事件
+const signinEvent = async () => {
+    let userSigninPayload: UserSigninPayload = {
+        user_name: userName.value,
+        user_password: userPassword.value,
+        captcha_image: captchaImage.value,
+        captcha_image_key: captchaImageKey.value,
+    };
+    let userAuth: UserAuth = await postSignin(userSigninPayload);
+    userAuthStore.updateUserAuth(userAuth);
+    let userClaims: UserClaims = jwtDecode(userAuth.access_token);
+    userInfoStore.updateUserInfo(userClaims.user_info);
+    isSignin.value = true;
+}
+
 onMounted(() => {
     checkUserIsHaveSignin();
     checkIsSignin();
@@ -66,22 +94,22 @@ watch(() => userInfoStore.userInfo.user_id, checkUserIsHaveSignin);
 </script>
 
 <template>
-    <div class="container">
-        <div v-if="isSignin" class="form-container">
+    <div class="SigninOrSignupContainer">
+        <div v-if="isSignin" class="formContainer">
             <h2>登录</h2>
-            <form class="form-content">
+            <div class="form-content">
                 <div class="input-group">
                     <label for="username">用户名:</label>
-                    <input id="username" type="text" placeholder="请输入用户名" />
+                    <input v-model="userName" id="username" type="text" placeholder="请输入用户名" />
                 </div>
                 <div class="input-group">
                     <label for="password">密码:</label>
-                    <input id="password" type="password" placeholder="请输入密码" />
+                    <input v-model="userPassword" id="password" type="password" placeholder="请输入密码" />
                 </div>
                 <div class="input-group">
                     <label for="captchaImage">图形验证码:</label>
-                    <div class="captcha-container">
-                        <input id="captchaImage" type="text" placeholder="请输入验证码" />
+                    <div class="captchaContainer">
+                        <input v-model="captchaImage" id="captchaImage" type="text" placeholder="请输入验证码" />
                         <img :src="captchaImageData" alt="验证码" class="captcha-image" @click="refreshCaptchaImage" />
                     </div>
                 </div>
@@ -89,62 +117,64 @@ watch(() => userInfoStore.userInfo.user_id, checkUserIsHaveSignin);
                     <span class="link" @click="goToSignup">没有账号？</span>
                     <span class="link">忘记密码</span>
                 </div>
-                <button class="submit-btn">登录</button>
-            </form>
+                <button class="submitBtn" @click="signinEvent">登录</button>
+            </div>
         </div>
 
-        <div v-else class="form-container">
+        <div v-else class="formContainer">
             <h2>注册</h2>
-            <form class="form-content">
+            <div class="form-content">
                 <div class="input-group">
                     <label for="username">用户名:</label>
-                    <input id="username" type="text" placeholder="请输入用户名" />
+                    <input v-model="userName" id="username" type="text" placeholder="请输入用户名" />
                 </div>
                 <div class="input-group">
                     <label for="password">密码:</label>
-                    <input id="password" type="password" placeholder="请输入密码" />
+                    <input v-model="userPassword" id="password" type="password" placeholder="请输入密码" />
                 </div>
                 <div class="input-group">
                     <label for="email">邮箱:</label>
-                    <input id="email" type="email" placeholder="请输入邮箱" />
+                    <input v-model="userEmail" id="email" type="email" placeholder="请输入邮箱" />
                 </div>
                 <div class="input-group">
                     <label for="captchaImage">图形验证码:</label>
-                    <div class="captcha-container">
-                        <input id="captchaImage" type="text" placeholder="请输入验证码" />
+                    <div class="captchaContainer">
+                        <input v-model="captchaImage" id="captchaImage" type="text" placeholder="请输入验证码" />
                         <img :src="captchaImageData" alt="验证码" class="captcha-image" @click="refreshCaptchaImage" />
                     </div>
                 </div>
                 <div class="input-group">
                     <label for="captchaEmail">邮箱验证码:</label>
-                    <div class="captcha-container">
-                        <input id="captchaEmail" type="text" placeholder="请输入邮箱验证码" />
-                        <button class="verify-btn" :disabled="disableBtn" @click="sendEmailEvent">{{ btnText }}</button>
+                    <div class="captchaContainer">
+                        <input v-model="captchaEmail" id="captchaEmail" type="text" placeholder="请输入邮箱验证码" />
+                        <button class="verifyBtn" :disabled="disableBtn" @click="sendEmailEvent">{{ btnText }}</button>
                     </div>
                 </div>
                 <div class="links">
                     <span class="link" @click="goToSignin">已有账号？</span>
                 </div>
-                <button class="submit-btn">注册</button>
-            </form>
+                <button class="submitBtn">注册</button>
+            </div>
         </div>
     </div>
 </template>
 
 <style scoped>
 /* 全局样式 */
-.container {
+.SigninOrSignupContainer {
+    top: 80px;
+    position: relative;
+    height: calc(100vh - 80px);
+    width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
-    background-color: #b4b8ab;
+    /* background-color: #b4b8ab; */
     font-family: 'Arial', sans-serif;
 }
 
 /* 表单容器样式 */
-.form-container {
+.formContainer {
     width: 100%;
     max-width: 500px;
     padding: 30px;
@@ -192,7 +222,7 @@ h2 {
 }
 
 /* 验证码容器 */
-.captcha-container {
+.captchaContainer {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -200,7 +230,7 @@ h2 {
 }
 
 .captcha-image,
-.verify-btn {
+.verifyBtn {
     width: 100px;
     height: 40px;
     object-fit: cover;
@@ -211,7 +241,7 @@ h2 {
 }
 
 /* 验证按钮 */
-.verify-btn {
+.verifyBtn {
     height: 45px;
     width: 140px;
     font-size: 1rem;
@@ -223,16 +253,16 @@ h2 {
     transition: background-color 0.3s ease;
 }
 
-.verify-btn:hover {
+.verifyBtn:hover {
     background-color: #6dd5fa;
 }
 
-.verify-btn:active {
+.verifyBtn:active {
     background-color: #1d7b99;
 }
 
 /* 禁用状态的按钮样式 */
-.verify-btn:disabled {
+.verifyBtn:disabled {
     background-color: #d1d1d1;
     /* 灰色背景 */
     color: #a1a1a1;
@@ -263,7 +293,7 @@ h2 {
 }
 
 /* 提交按钮 */
-.submit-btn {
+.submitBtn {
     width: 100%;
     padding: 14px;
     font-size: 1.2rem;
@@ -275,11 +305,11 @@ h2 {
     transition: background-color 0.3s ease;
 }
 
-.submit-btn:hover {
+.submitBtn:hover {
     background-color: #6dd5fa;
 }
 
-.submit-btn:active {
+.submitBtn:active {
     background-color: #1d7b99;
 }
 </style>

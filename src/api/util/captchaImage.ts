@@ -1,5 +1,5 @@
 import request from "@/util/request";
-import type { AppResponse } from "@/util/types";
+import type { AppResponse } from "@/model";
 
 async function getCaptchaImage(captchaImageKey: string) {
     const res: AppResponse<string> = await request.get(`/util/captcha_image/${captchaImageKey}`);

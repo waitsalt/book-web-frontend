@@ -15,11 +15,11 @@ const handleSearch = () => {
 </script>
 
 <template>
-    <div class="container">
-        <div class="search-box">
-            <input v-model="searchQuery" class="search-input" type="text" placeholder="请输入关键字搜索..."
+    <div class="searchContainer">
+        <div class="searchBox">
+            <input v-model="searchQuery" class="searchInput" type="text" placeholder="请输入关键字搜索..."
                 @keyup.enter="handleSearch" />
-            <div class="search-icon" @click="handleSearch">
+            <div class="searchIcon" @click="handleSearch">
                 <AiOutlineSearch />
             </div>
         </div>
@@ -28,12 +28,13 @@ const handleSearch = () => {
 
 <style scoped>
 /* 搜索框外层容器 */
-.container {
-    position: relative;
+.searchContainer {
+    position: absolute;
+    z-index: 1002;
 }
 
 /* 搜索框容器 */
-.search-box {
+.searchBox {
     top: 10px;
     height: 60px;
     display: flex;
@@ -51,13 +52,13 @@ const handleSearch = () => {
     transition: box-shadow 0.3s ease;
 }
 
-.search-box:hover {
+.searchBox:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     /* 鼠标悬停时的阴影效果 */
 }
 
 /* 搜索框输入 */
-.search-input {
+.searchInput {
     flex: 1;
     border: none;
     outline: none;
@@ -66,14 +67,14 @@ const handleSearch = () => {
     color: #333;
 }
 
-.search-input::placeholder {
+.searchInput::placeholder {
     color: #aaa;
     /* 占位符颜色 */
     font-style: italic;
 }
 
 /* 搜索按钮 */
-.search-icon {
+.searchIcon {
     position: relative;
     height: 50px;
     width: 50px;
@@ -91,8 +92,9 @@ const handleSearch = () => {
     align-items: center;
 }
 
-.search-icon:hover {
+.searchIcon:hover {
     background: #B4B8AB;
+    transform: scale(1.1);
     /* 鼠标悬停时更深的绿色 */
 }
 </style>

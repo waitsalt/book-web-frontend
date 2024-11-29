@@ -1,9 +1,4 @@
-type SearchBookPayload = {
-    type: string,
-    keyword: string,
-};
-
-type SignupUserPayload = {
+type UserSignupPayload = {
     user_name: string,
     user_password: string,
     user_email: string,
@@ -13,7 +8,7 @@ type SignupUserPayload = {
     captcha_image: string,
 };
 
-type SigninUserPayload = {
+type UserSigninPayload = {
     user_name: string,
     user_password: string,
     captcha_image: string,
@@ -37,38 +32,24 @@ type UserAuth = {
     refresh_token: string,
 }
 
-type Book = {
-    book_id: number,
-    book_name: string,
-    author_id: number,
-    author_name: string,
-    platform: string,
-    user_id: number,
-    user_name: string,
-    cover_url: string,
-    source_url: string,
-    book_tags: string,
-    book_desc: string,
-    book_class: string,
-    book_status: string,
-    latest_chapter_id: number,
-    latest_chapter_name: string,
-    create_time: string,
-    update_time: string,
+type UserClaims = {
+    iat: number,
+    exp: number,
+    user_info: UserInfo,
 }
 
-type AppResponse<T> = {
-    code: number,
-    message: string,
-    data: T,
+type UserRefreshClaims = {
+
+    iat: number,
+    exp: number,
+    user_id: number,
 }
 
 export {
-    type SearchBookPayload,
-    type SigninUserPayload,
-    type SignupUserPayload,
+    type UserSigninPayload,
+    type UserSignupPayload,
     type UserInfo,
     type UserAuth,
-    type AppResponse,
-    type Book,
-};
+    type UserClaims,
+    type UserRefreshClaims,
+}

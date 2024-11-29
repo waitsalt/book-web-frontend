@@ -2,17 +2,17 @@
 </script>
 
 <template>
-    <div class="container">
+    <div class="homeContainer">
         <h1>Home</h1>
     </div>
 </template>
 
 <style scoped>
-.container {
+.homeContainer {
     top: 80px;
     position: relative;
-    height: 100vh;
+    height: calc(100vh - 80px);
     width: 100vw;
-    background-color: #B4B8AB;
+    /* background-color: #B4B8AB; */
 }
 </style>

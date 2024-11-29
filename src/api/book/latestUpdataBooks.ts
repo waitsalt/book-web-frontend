@@ -1,5 +1,6 @@
+import type { AppResponse } from "@/model";
+import type { Book } from "@/model/book";
 import request from "@/util/request";
-import type { AppResponse, Book } from "@/util/types";
 
 async function getLatestUpdataBooks() {
     const res: AppResponse<Book[]> = await request.get(``);

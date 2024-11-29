@@ -6,13 +6,13 @@ import UserNavComponent from './component/UserNavComponent.vue';
 </script>
 
 <template>
-    <div class="container">
+    <div class="appContainer">
         <div class="nav">
             <PathNavComponent />
             <SearchComponent />
             <UserNavComponent />
         </div>
-        <div class="app-view">
+        <div class="appView">
             <RouterView />
         </div>
     </div>
@@ -20,8 +20,7 @@ import UserNavComponent from './component/UserNavComponent.vue';
 
 <style scoped>
 /* 容器设置为列布局，最小高度100vh */
-.container {
-    display: flex;
+.appContainer {
     background-color: #B4B8AB;
 }
 </style>

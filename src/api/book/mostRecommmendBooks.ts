@@ -1,5 +1,6 @@
 import request from "@/util/request";
-import type { AppResponse, Book } from "@/util/types";
+import type { AppResponse } from "@/model";
+import type { Book } from "@/model/book";
 
 async function getMostRecommmendBooks() {
     const res: AppResponse<Book[]> = await request.get(``);

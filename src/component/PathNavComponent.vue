@@ -53,33 +53,34 @@ const goToHome = () => {
 </script>
 
 <template>
-    <div class="container">
+    <div class="pathNavContainer">
         <!-- 路径图标 -->
-        <div class="path-icon" @mouseenter="enterPathIconEvent" @mouseleave="leavePathIconEvent" @click="goToHome">
+        <div class="pathIcon" @mouseenter="enterPathIconEvent" @mouseleave="leavePathIconEvent" @click="goToHome">
             <AiOutlineMenu :color="iconConfig.color" :size="iconConfig.size" />
         </div>
 
         <!-- 路径卡片 -->
-        <div class="path-card" :class="{ hidden: !(isHovered.icon || isHovered.card) }" @mouseenter="enterPathCardEvent"
+        <div class="pathCard" :class="{ hidden: !(isHovered.icon || isHovered.card) }" @mouseenter="enterPathCardEvent"
             @mouseleave="leavePathCardEvent">
-            <p>内容</p>
+            <p>内容vsdvs</p>
         </div>
     </div>
 </template>
 
 <style scoped>
 /* 外层容器 */
-.container {
-    position: relative;
+.pathNavContainer {
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #B4B8AB;
     /* 添加渐变背景 */
+    z-index: 1000;
 }
 
 /* 路径图标样式 */
-.path-icon {
+.pathIcon {
     position: fixed;
     top: 10px;
     left: 10px;
@@ -97,7 +98,7 @@ const goToHome = () => {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.path-icon:hover {
+.pathIcon:hover {
     transform: scale(1.1);
     background-color: #B4B8AB;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
@@ -105,7 +106,7 @@ const goToHome = () => {
 }
 
 /* 路径卡片样式 */
-.path-card {
+.pathCard {
     position: fixed;
     top: 90px;
     left: 10px;
@@ -120,16 +121,17 @@ const goToHome = () => {
     color: #333;
     text-align: center;
     opacity: 0.9;
+    z-index: 1001;
     transition: opacity 0.3s ease;
 }
 
-.path-card:hover {
+.pathCard:hover {
     transform: translateY(-8px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
     /* 放大时阴影效果 */
 }
 
-.path-card p {
+.pathCard p {
     margin: 0;
     padding: 0;
     font-weight: 600;
@@ -141,12 +143,12 @@ const goToHome = () => {
 }
 
 /* 添加平滑的透明度过渡 */
-.path-card {
+.pathCard {
     opacity: 0;
     transition: opacity 0.5s ease;
 }
 
-.path-card:not(.hidden) {
+.pathCard:not(.hidden) {
     opacity: 1;
 }
 </style>

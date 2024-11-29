@@ -1,4 +1,5 @@
-import type { UserAuth } from "@/util/types";
+
+import type { UserAuth } from "@/model/user";
 import { defineStore } from "pinia";
 
 
@@ -14,7 +15,9 @@ const useUserAuthStore = defineStore("userAuth", {
         }
     }),
     actions: {
-
+        updateUserAuth(userAuth: UserAuth) {
+            this.userAuth = userAuth;
+        }
     },
     persist: true,
 })
