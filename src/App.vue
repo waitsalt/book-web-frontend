@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import NotifyComponent from './component/NotifyComponent.vue';
 import PathNavComponent from './component/PathNavComponent.vue';
 import SearchComponent from './component/SearchComponent.vue';
 import UserNavComponent from './component/UserNavComponent.vue';
@@ -7,7 +8,7 @@ import UserNavComponent from './component/UserNavComponent.vue';
 
 <template>
     <div class="appContainer">
-        <div class="nav">
+        <div class="appNav">
             <PathNavComponent />
             <SearchComponent />
             <UserNavComponent />
@@ -15,12 +16,27 @@ import UserNavComponent from './component/UserNavComponent.vue';
         <div class="appView">
             <RouterView />
         </div>
+        <NotifyComponent />
     </div>
 </template>
 
 <style scoped>
-/* 容器设置为列布局，最小高度100vh */
 .appContainer {
     background-color: #B4B8AB;
+    height: 100vh;
+    width: 100vw;
+    padding: 0;
+    margin: 0;
+}
+
+.appNav {
+    height: 80px;
+}
+
+.appView {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: calc(100vh - 80px);
 }
 </style>

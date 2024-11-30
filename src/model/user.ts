@@ -45,11 +45,11 @@ type UserRefreshClaims = {
     user_id: number,
 }
 
-export {
-    type UserSigninPayload,
-    type UserSignupPayload,
-    type UserInfo,
-    type UserAuth,
-    type UserClaims,
-    type UserRefreshClaims,
+export type {
+    UserSigninPayload,
+    UserSignupPayload,
+    UserInfo,
+    UserAuth,
+    UserClaims,
+    UserRefreshClaims,
 }

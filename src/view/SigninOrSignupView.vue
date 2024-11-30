@@ -3,8 +3,7 @@ import { postSignin } from '@/api/user/signin';
 import { getCaptchaImage } from '@/api/util/captchaImage';
 import { uuid } from '@/api/util/uuid';
 import type { UserAuth, UserClaims, UserSigninPayload } from '@/model/user';
-import { useUserAuthStore } from '@/store/userAuth';
-import { useUserInfoStore } from '@/store/userInfo';
+import { useUserStore } from '@/store/user';
 import router from '@/util/router';
 import { jwtDecode } from 'jwt-decode';
 import { onMounted, ref, watch } from 'vue';
@@ -16,8 +15,7 @@ const btnText = ref('发送邮件');
 const disableBtn = ref(false);
 
 
-const userAuthStore = useUserAuthStore();
-const userInfoStore = useUserInfoStore();
+const userStore = useUserStore();
 
 const userName = ref('');
 const userEmail = ref('');
@@ -34,7 +32,7 @@ const checkIsSignin = () => {
 
 // 检查用户是否已登录
 const checkUserIsHaveSignin = () => {
-    if (userInfoStore.userInfo.user_id != 0) {
+    if (userStore.userInfo.user_id != 0) {
         router.push('/user');
     }
 };
@@ -77,9 +75,10 @@ const signinEvent = async () => {
         captcha_image_key: captchaImageKey.value,
     };
     let userAuth: UserAuth = await postSignin(userSigninPayload);
-    userAuthStore.updateUserAuth(userAuth);
+    userStore.updateUserAuth(userAuth);
     let userClaims: UserClaims = jwtDecode(userAuth.access_token);
-    userInfoStore.updateUserInfo(userClaims.user_info);
+    userStore.updateUserInfo(userClaims.user_info);
+    console.log(userClaims);
     isSignin.value = true;
 }
 
@@ -90,7 +89,7 @@ onMounted(() => {
 });
 
 // 监听用户状态的变化
-watch(() => userInfoStore.userInfo.user_id, checkUserIsHaveSignin);
+watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
 </script>
 
 <template>
@@ -162,14 +161,11 @@ watch(() => userInfoStore.userInfo.user_id, checkUserIsHaveSignin);
 <style scoped>
 /* 全局样式 */
 .SigninOrSignupContainer {
-    top: 80px;
-    position: relative;
-    height: calc(100vh - 80px);
-    width: 100vw;
     display: flex;
-    justify-content: center;
     align-items: center;
-    /* background-color: #b4b8ab; */
+    justify-content: center;
+    width: 100%;
+    height: 100%;
     font-family: 'Arial', sans-serif;
 }
 

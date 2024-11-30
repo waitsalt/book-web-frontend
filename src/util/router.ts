@@ -7,7 +7,12 @@ const routes = [
     { path: '/', component: HomeView },
     { path: "/signin", component: SigninOrSignupView },
     { path: "/signup", component: SigninOrSignupView },
-    { path: '/user', component: UserView }
+    { path: '/user', component: UserView },
+    { path: '/user/setting', component: UserView },
+    { path: '/user/collect', component: UserView },
+    { path: '/user/history', component: UserView },
+    { path: '/user/manage', component: UserView },
+    { path: '/user/upload', component: UserView }
 ];
 
 const router = createRouter({

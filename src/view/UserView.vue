@@ -1,14 +1,20 @@
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useUserInfoStore } from '@/store/userInfo';
+import { onMounted, ref, watch } from 'vue';
+import { useUserStore } from '@/store/user';
 import router from '@/util/router';
 import SettingComponent from '@/component/user/SettingComponent.vue';
+import CollectComponent from '@/component/user/CollectComponent.vue';
+import HistoryComponent from '@/component/user/HistoryComponent.vue';
+import UploadComponent from '@/component/user/UploadComponent.vue';
+import ManageComponent from '@/component/user/ManageComponent.vue';
 
 // 获取用户信息存储
-const userInfoStore = useUserInfoStore();
+const userInfoStore = useUserStore();
 
+const localUrl = window.location.href;
+const lastestUrlPart = localUrl.split('/').pop();
 // 状态管理，记录当前选中的导航项
-const activeNav = ref('setting'); // 默认选中 'setting'
+const activeNav = ref(lastestUrlPart); // 默认选中 'setting'
 
 const checkUserIsHaveSignin = () => {
     if (userInfoStore.userInfo.user_id === 0) {
@@ -20,9 +26,19 @@ const settingComponent = SettingComponent;
 
 // 切换选中的导航项
 const selectNav = (nav: string) => {
+    router.push(`/user/${nav}`)
     activeNav.value = nav;
-    checkUserIsHaveSignin();
 }
+
+onMounted(() => {
+    if (activeNav.value === 'user') {
+        activeNav.value = 'setting';
+        router.push("/user/setting");
+    }
+    checkUserIsHaveSignin();
+})
+
+watch(() => userInfoStore.userInfo.user_id, checkUserIsHaveSignin);
 </script>
 
 
@@ -33,7 +49,7 @@ const selectNav = (nav: string) => {
             <div class="navItem" :class="{ active: activeNav === 'setting' }" @click="selectNav('setting')">设置</div>
             <div class="navItem" :class="{ active: activeNav === 'collect' }" @click="selectNav('collect')">收藏</div>
             <div class="navItem" :class="{ active: activeNav === 'history' }" @click="selectNav('history')">历史</div>
-            <div class="navItem" :class="{ active: activeNav === 'manager' }" @click="selectNav('manager')">管理</div>
+            <div class="navItem" :class="{ active: activeNav === 'manage' }" @click="selectNav('manage')">管理</div>
             <div class="navItem" :class="{ active: activeNav === 'upload' }" @click="selectNav('upload')">上传</div>
         </div>
 
@@ -42,38 +58,46 @@ const selectNav = (nav: string) => {
             <div v-if="activeNav === 'setting'">
                 <component :is="settingComponent"></component>
             </div>
-            <div v-if="activeNav === 'collect'">收藏内容</div>
-            <div v-if="activeNav === 'history'">历史内容</div>
-            <div v-if="activeNav === 'manager'">管理内容</div>
-            <div v-if="activeNav === 'upload'">上传内容</div>
+            <div v-if="activeNav === 'collect'">
+                <component :is="CollectComponent"></component>
+            </div>
+            <div v-if="activeNav === 'history'">
+                <component :is="HistoryComponent"></component>
+            </div>
+            <div v-if="activeNav === 'manage'">
+                <component :is="ManageComponent"></component>
+            </div>
+            <div v-if="activeNav === 'upload'">
+                <component :is="UploadComponent"></component>
+            </div>
         </div>
     </div>
 </template>
 
 
 <style scoped>
-/* 全局样式 */
 .userContainer {
-    position: relative;
-    top: 80px;
     display: flex;
-    margin-top: 80;
+    position: relative;
+    margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     background-color: #f9f9f9;
+    font-family: 'Arial', sans-serif;
 }
 
 .pathNav {
     display: flex;
     flex-direction: column;
     width: 250px;
+    margin: 0px 0 0 0;
     background-color: #F1F0E8;
-    padding: 20px 0;
+    padding: 20px 20px;
     border-radius: 20px 0 0 20px;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     font-size: 18px;
-    height: 100%;
+    height: auto;
 }
 
 .navItem {
@@ -89,6 +113,7 @@ const selectNav = (nav: string) => {
 
 .navItem:hover {
     background-color: #f1f1f1;
+    border-radius: 10px;
     transform: scale(1.05);
 }
 
@@ -102,10 +127,9 @@ const selectNav = (nav: string) => {
 /* 右侧视图样式 */
 .pathView {
     flex-grow: 1;
-    margin-left: 20px;
     padding: 20px;
     background-color: #fff;
-    border-radius: 0 20px 20px 20px;
+    border-radius: 20px 0px 0px 20px;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
 }

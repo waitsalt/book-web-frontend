@@ -30,7 +30,7 @@ const handleSearch = () => {
 /* 搜索框外层容器 */
 .searchContainer {
     position: absolute;
-    z-index: 1002;
+    z-index: 1000;
 }
 
 /* 搜索框容器 */
@@ -40,14 +40,14 @@ const handleSearch = () => {
     display: flex;
     position: fixed;
     align-items: center;
-    left: 30vw;
+    left: 35vw;
     background: #ffffff;
     border-radius: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     /* 阴影效果 */
     overflow: hidden;
-    width: 50vw;
-    max-width: 600px;
+    width: 30vw;
+    /* max-width: 600px; */
     /* 最大宽度 */
     transition: box-shadow 0.3s ease;
 }

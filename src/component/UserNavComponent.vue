@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { useUserInfoStore } from '@/store/userInfo';
+import { useUserStore } from '@/store/user';
 import router from '@/util/router';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { AiOutlineMenu, AiOutlineUser } from 'vue-icons-plus/ai';
 
+// 1 --- start
 // 设置浮动卡片的显示与持续时间
 const cursorInIcon = ref(false);
 const cursorInCard = ref(false);
@@ -35,24 +36,6 @@ const leavePathCardEvent = () => {
     }, showTime.value);
 };
 
-// 路径跳转
-const goToUser = () => {
-    router.push('/user');
-};
-const goToSignin = () => {
-    router.push('/signin');
-};
-
-// 用户是否登陆
-const userIsLogin = ref(false);
-const nologinIconConfig = ref({
-    color: 'white',
-    size: 30,
-});
-
-const userInfoStore = useUserInfoStore();
-
-
 const enterNologinUserIconEvent = () => {
     nologinIconConfig.value.color = '#284B63';
 };
@@ -60,12 +43,34 @@ const enterNologinUserIconEvent = () => {
 const leaveNologinUserIconEvent = () => {
     nologinIconConfig.value.color = 'white';
 };
+// 1 --- end
 
+
+// 路径跳转
+const goToPath = (path: string) => {
+    router.push(path);
+};
+
+// 用户是否登陆
+const userHasSignin = ref(false);
+const nologinIconConfig = ref({
+    color: 'white',
+    size: 30,
+});
+
+const userStore = useUserStore();
 
 const checkUserIsHaveSignin = () => {
-    if (userInfoStore.userInfo.user_id != 0) {
-        userIsLogin.value = true;
+    if (userStore.userInfo.user_id != 0) {
+        userHasSignin.value = true;
+    } else {
+        userHasSignin.value = false;
     }
+}
+
+const logoutEvent = () => {
+    userStore.$reset();
+    router.push('/signin');
 }
 
 onMounted(() => {
@@ -73,24 +78,27 @@ onMounted(() => {
 })
 
 const userAvatarUrl = () => {
-    if (userInfoStore.userInfo.avatar_url == "") {
+    if (userStore.userInfo.avatar_url == "") {
         return '/src/public/web.png'
     } else {
-        return userInfoStore.userInfo.avatar_url;
+        return userStore.userInfo.avatar_url;
     }
 }
+
+watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
 </script>
 
 <template>
-    <div class="container">
+    <div class="userNavContainer">
         <!-- 用户图标 -->
-        <div v-if="userIsLogin" class="userIcon" @mouseenter="enterUserIconEvent" @mouseleave="leaveUserIconEvent"
-            @click="goToUser">
+        <div v-if="userHasSignin" class="userIcon" @mouseenter="enterUserIconEvent" @mouseleave="leaveUserIconEvent"
+            @click="goToPath('user')">
             <img :src="userAvatarUrl()" alt="">
         </div>
         <!-- 未登录时显示的登录按钮 -->
         <div v-else class="nologinUserIcon" @mouseenter="enterNologinUserIconEvent"
-            @mouseleave="leaveNologinUserIconEvent" :style="{ color: nologinIconConfig.color }" @click="goToSignin">
+            @mouseleave="leaveNologinUserIconEvent" :style="{ color: nologinIconConfig.color }"
+            @click="goToPath('signin')">
             <AiOutlineUser :color="nologinIconConfig.color" :size="nologinIconConfig.size" /> <strong>登录</strong>
         </div>
     </div>
@@ -98,19 +106,19 @@ const userAvatarUrl = () => {
     <div class="userCard" :class="{ hidden: !(cursorInCard || cursorInIcon) }" @mouseenter="enterPathCardEvent"
         @mouseleave="leavePathCardEvent">
         <div class="userInfo">
-            <div><strong>用户:</strong> {{ userInfoStore.userInfo.user_name }}</div>
-            <div><strong>邮箱:</strong> {{ userInfoStore.userInfo.user_email }}</div>
-            <div><strong>等级:</strong> {{ userInfoStore.userInfo?.level }}</div>
+            <div><strong>用户:</strong> {{ userStore.userInfo.user_name }}</div>
+            <div><strong>邮箱:</strong> {{ userStore.userInfo.user_email }}</div>
+            <div><strong>等级:</strong> {{ userStore.userInfo?.level }}</div>
         </div>
         <div class="pathNav">
-            <div class="setting" @click=""><span class="icon">⚙️</span> 设置</div>
-            <div class="collect" @click=""><span class="icon">⭐</span> 收藏</div>
-            <div class="history" @click=""><span class="icon">🕒</span> 历史</div>
-            <div class="upload" @click=""><span class="icon">⬆️</span> 上传</div>
-            <div class="manage" @click=""><span class="icon">📁</span> 管理</div>
+            <div class="setting" @click="goToPath('/user/setting')"><span class="icon">⚙️</span> 设置</div>
+            <div class="collect" @click="goToPath('/user/collect')"><span class="icon">⭐</span> 收藏</div>
+            <div class="history" @click="goToPath('/user/history')"><span class="icon">🕒</span> 历史</div>
+            <div class="upload" @click="goToPath('/user/upload')"><span class="icon">⬆️</span> 上传</div>
+            <div class="manage" @click="goToPath('/user/manage')"><span class="icon">📁</span> 管理</div>
         </div>
         <div class="userAction">
-            <div class="logout">
+            <div class="logout" @click="logoutEvent">
                 退出登陆
             </div>
         </div>
@@ -119,9 +127,9 @@ const userAvatarUrl = () => {
 
 <style scoped>
 /* 外部容器 */
-.container {
+.userNavContainer {
     position: absolute;
-    z-index: 1002;
+    z-index: 1000;
 }
 
 /* 用户图标样式 */

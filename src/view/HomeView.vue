@@ -9,10 +9,9 @@
 
 <style scoped>
 .homeContainer {
-    top: 80px;
     position: relative;
-    height: calc(100vh - 80px);
-    width: 100vw;
+    height: 100%;
+    width: 100%;
     /* background-color: #B4B8AB; */
 }
 </style>

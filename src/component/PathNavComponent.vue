@@ -84,8 +84,8 @@ const goToHome = () => {
     position: fixed;
     top: 10px;
     left: 10px;
-    height: 60px;
-    width: 60px;
+    height: 58px;
+    width: 58px;
     border-radius: 50%;
     background-color: #c2c2b2;
     cursor: pointer;
