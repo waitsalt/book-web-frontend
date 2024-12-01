@@ -93,8 +93,9 @@ import { EpSuccessFilled } from 'vue-icons-plus/ep';
 }
 
 .title {
+    top: 0;
     font-weight: bold;
-    font-size: 25px;
+    font-size: 20px;
     flex-grow: 1;
     /* 占据可用空间 */
     color: #333;
@@ -118,7 +119,7 @@ import { EpSuccessFilled } from 'vue-icons-plus/ep';
 
 .content {
     margin-top: 5px;
-    font-size: 20px;
+    font-size: 25px;
     color: #555;
     text-align: left;
     /* 确保内容从左到右排列 */
