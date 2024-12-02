@@ -2,18 +2,7 @@
 import type { BookInfo } from '@/model/book';
 import router from '@/util/router';
 
-//const bookInfo: BookInfo = defineProps<BookInfo>()
-
-const bookInfo = {
-    book_id: 1,
-    author_name: 'author',
-    cover_url: '',
-    book_name: 'book_1',
-    platform: '未知',
-    book_status: "完结",
-    book_desc: 'desc',
-    book_tags: '#tag1 #tag2'
-}
+const { bookInfo } = defineProps<{ bookInfo: BookInfo }>()
 
 const gotoBook = () => {
     router.push(`/book/${bookInfo.book_id}`);
@@ -30,8 +19,8 @@ const gotoBook = () => {
             <!-- 合并作者、平台和状态为一行 -->
             <div class="book-meta">
                 <span class="author">{{ bookInfo.author_name }}</span>
-                <span class="platform">{{ bookInfo.platform }}</span>
-                <span class="status">{{ bookInfo.book_status }}</span>
+                <span class="platform">平台: {{ bookInfo.platform }}</span>
+                <span class="status">状态: {{ bookInfo.book_status }}</span>
             </div>
             <div class="tags">
                 <span v-for="tag in bookInfo.book_tags.split(' ')" :key="tag" class="tag">{{ tag }}</span>
@@ -47,17 +36,19 @@ const gotoBook = () => {
     width: 400px;
     flex-direction: row;
     padding: 10px;
-    background-color: #f9f9f9;
+    background-color: #fff;
     border-radius: 8px;
+    background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     overflow: hidden;
 }
 
 .book-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    background-color: #f0f0f0;
 }
 
 .cover {

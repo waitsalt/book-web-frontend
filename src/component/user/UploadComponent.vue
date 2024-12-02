@@ -86,8 +86,7 @@ const editChapterTitle = (rollIndex: number, chapterIndex: number, newTitle: str
 };
 const updateRoll = () => {
     for (let index = 0; index < rolls.value.length; index++) {
-        const roll = rolls.value[index];
-        roll.id = index;
+        rolls.value[index].id = index;
     }
     updateChapter()
 }
@@ -192,13 +191,13 @@ const saveChapterShow = () => {
             <div class="bookMenu">
                 <button class="addRoll" @click="addNewRoll">新增卷</button>
                 <VueDraggable v-model="rolls" handle=".handle" class="menu" @update="updateRoll">
-                    <div class="roll" v-for="(roll, rollIndex) in rolls" :key="roll.id">
-                        <div class="rollInfo" @click="changeFlod(rollIndex)">
+                    <div class="roll" v-for="(roll, rollIndex) in rolls" :key="rollIndex">
+                        <div class="rollInfo">
                             <div class="icon handle">
                                 <MdDragIndicator />
                             </div>
                             <div class="rollTitle">
-                                <span>{{ `第${roll.id + 1}卷 ` }}</span>
+                                <span>{{ `第${rollIndex + 1}卷 ` }}</span>
                                 <input v-if="roll.isEditing" v-model="roll.title"
                                     @blur="editRollTitle(rollIndex, roll.title)" class="editInput" autofocus />
                                 <span v-else @dblclick="roll.isEditing = true">{{ roll.title }}</span>
@@ -213,7 +212,8 @@ const saveChapterShow = () => {
                         <div class="chapters" :class="{ hidden: roll.fold }">
                             <VueDraggable handle=".handle" v-model="roll.chapters" group="chapter" ghost-class="ghost"
                                 @update="updateChapter">
-                                <div v-for="(chapter, chapterIndex) in roll.chapters" class="chapter" :key="chapter.id">
+                                <div v-for="(chapter, chapterIndex) in roll.chapters" class="chapter"
+                                    :key="chapterIndex">
                                     <div class="chapterInfo" @click="chooseChapter(roll.id, chapter.id)">
                                         <div class="icon handle">
                                             <MdDragIndicator />
