@@ -16,7 +16,6 @@ const gotoBook = () => {
         </div>
         <div class="book-details">
             <h3 class="book-name">{{ bookInfo.book_name }}</h3>
-            <!-- 合并作者、平台和状态为一行 -->
             <div class="book-meta">
                 <span class="author">{{ bookInfo.author_name }}</span>
                 <span class="platform">平台: {{ bookInfo.platform }}</span>
@@ -36,19 +35,14 @@ const gotoBook = () => {
     width: 400px;
     flex-direction: row;
     padding: 10px;
-    background-color: #fff;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
     overflow: hidden;
 }
 
 .book-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    background-color: #f0f0f0;
+    background-color: #d8d8e1;
 }
 
 .cover {
@@ -73,21 +67,17 @@ const gotoBook = () => {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    /* justify-content: space-between; */
 }
 
 .book-name {
     font-size: 1.2rem;
     font-weight: 600;
     color: #333;
-    /* margin-bottom: 8px; */
 }
 
 .book-meta {
     display: flex;
-    /* justify-content: space-between; */
     gap: 10px;
-    /* 为项之间增加间距 */
     margin-bottom: 5px;
 }
 
@@ -111,10 +101,10 @@ const gotoBook = () => {
 }
 
 .tag {
-    background-color: #f1f1f1;
+    background-color: #d6d6d6;
     color: #333;
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 0.8rem;
 }
 </style>

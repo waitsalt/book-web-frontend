@@ -1,10 +1,10 @@
 import type { Collect } from "@/model/collect";
 import type { History } from "@/model/history";
-import type { UserAuth, UserInfo } from "@/model/user";
+import type { UserAuth, UserPublic } from "@/model/user";
 import { defineStore } from "pinia";
 
 type State = {
-    userInfo: UserInfo,
+    userPublic: UserPublic,
     userAuth: UserAuth,
     collects: Collect[],
     historys: History[],
@@ -12,7 +12,7 @@ type State = {
 
 const useUserStore = defineStore('user', {
     state: (): State => ({
-        userInfo: {
+        userPublic: {
             user_id: 0,
             user_name: '',
             user_email: '',
@@ -31,8 +31,8 @@ const useUserStore = defineStore('user', {
         historys: [],
     }),
     actions: {
-        updateUserInfo(userInfo: UserInfo) {
-            this.userInfo = userInfo;
+        updateUserPublic(userPublic: UserPublic) {
+            this.userPublic = userPublic;
         },
         updateUserAuth(userAuth: UserAuth) {
             this.userAuth = userAuth;

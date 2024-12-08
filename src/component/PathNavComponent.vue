@@ -2,6 +2,7 @@
 import router from '@/util/router';
 import { ref } from 'vue';
 import { AiOutlineMenu } from 'vue-icons-plus/ai';
+import { BsBook } from 'vue-icons-plus/bs';
 
 const isHovered = ref({
     icon: false,
@@ -15,20 +16,14 @@ const iconConfig = ref({
 
 const hoverTimeout = ref(700); // Hover 延时设置，控制显示卡片和隐藏卡片的时间
 
-// 更新图标状态
-const updateIconState = (isHoveredIcon: boolean) => {
-    iconConfig.value.color = isHoveredIcon ? '#284B63' : 'white';
-};
 
 // 图标进入事件
 const enterPathIconEvent = () => {
     isHovered.value.icon = true;
-    updateIconState(true);
 };
 
 // 图标离开事件
 const leavePathIconEvent = () => {
-    updateIconState(false);
     setTimeout(() => { // 如果没有在卡片上
         isHovered.value.icon = false; // 让图标变为非hover状态
     }, hoverTimeout.value);
@@ -56,7 +51,8 @@ const goToHome = () => {
     <div class="pathNavContainer">
         <!-- 路径图标 -->
         <div class="pathIcon" @mouseenter="enterPathIconEvent" @mouseleave="leavePathIconEvent" @click="goToHome">
-            <AiOutlineMenu :color="iconConfig.color" :size="iconConfig.size" />
+            <!-- <BsBook :color="iconConfig.color" :size="iconConfig.size" /> -->
+            <BsBook />
         </div>
 
         <!-- 路径卡片 -->
@@ -84,23 +80,21 @@ const goToHome = () => {
     position: fixed;
     top: 10px;
     left: 10px;
-    height: 58px;
-    width: 58px;
+    height: 46px;
+    width: 46px;
+    color: #00a1b6;
+    background-color: #d9eef7;
     border-radius: 50%;
-    background-color: #c2c2b2;
     cursor: pointer;
-    border: 2px solid #eef0eb;
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    /* 添加阴影效果 */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: box-shadow 0.3s ease;
 }
 
 .pathIcon:hover {
-    transform: scale(1.1);
-    background-color: #B4B8AB;
+    color: #ffffff;
+    background-color: #00a1b6;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     /* 放大时阴影效果 */
 }
@@ -108,7 +102,8 @@ const goToHome = () => {
 /* 路径卡片样式 */
 .pathCard {
     position: fixed;
-    top: 90px;
+    z-index: 2000;
+    top: 70px;
     left: 10px;
     padding: 15px;
     border-radius: 12px;
@@ -122,13 +117,11 @@ const goToHome = () => {
     text-align: center;
     opacity: 0.9;
     z-index: 1001;
-    transition: opacity 0.3s ease;
+    transition: box-shadow 0.3s ease;
 }
 
 .pathCard:hover {
-    transform: translateY(-8px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-    /* 放大时阴影效果 */
 }
 
 .pathCard p {

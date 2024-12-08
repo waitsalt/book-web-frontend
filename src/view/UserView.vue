@@ -9,25 +9,34 @@ import UploadComponent from '@/component/user/UploadComponent.vue';
 import ManageComponent from '@/component/user/ManageComponent.vue';
 
 // 获取用户信息存储
-const userInfoStore = useUserStore();
+const userStore = useUserStore();
 
 const localUrl = window.location.href;
 const lastestUrlPart = localUrl.split('/').pop();
-// 状态管理，记录当前选中的导航项
+
 const activeNav = ref(lastestUrlPart); // 默认选中 'setting'
 
 const checkUserIsHaveSignin = () => {
-    if (userInfoStore.userInfo.user_id === 0) {
+    if (userStore.userPublic.user_id === 0) {
         router.push('/signin');
     }
 }
-
-const settingComponent = SettingComponent;
 
 // 切换选中的导航项
 const selectNav = (nav: string) => {
     router.push(`/user/${nav}`)
     activeNav.value = nav;
+}
+
+const tabList = ref(["setting", "collect", 'history', 'manage', 'upload'])
+const tabText = (tab: string) => {
+    switch (tab) {
+        case 'setting': return '设置';
+        case 'collect': return '收藏';
+        case 'history': return '历史';
+        case 'manage': return '管理';
+        case 'upload': return '上传';
+    }
 }
 
 onMounted(() => {
@@ -38,25 +47,25 @@ onMounted(() => {
     checkUserIsHaveSignin();
 })
 
-watch(() => userInfoStore.userInfo.user_id, checkUserIsHaveSignin);
+watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
 </script>
 
 
 <template>
     <div class="userContainer">
         <!-- 左侧导航栏 -->
-        <div class="pathNav">
-            <div class="navItem" :class="{ active: activeNav === 'setting' }" @click="selectNav('setting')">设置</div>
-            <div class="navItem" :class="{ active: activeNav === 'collect' }" @click="selectNav('collect')">收藏</div>
-            <div class="navItem" :class="{ active: activeNav === 'history' }" @click="selectNav('history')">历史</div>
-            <div class="navItem" :class="{ active: activeNav === 'manage' }" @click="selectNav('manage')">管理</div>
-            <div class="navItem" :class="{ active: activeNav === 'upload' }" @click="selectNav('upload')">上传</div>
-        </div>
+        <ul class="homeNav">
+            <li v-for="tab in tabList" :key="tab">
+                <a href="#" :class="{ active: activeNav === tab }" @click.prevent="selectNav(tab)">
+                    {{ tabText(tab) }}
+                </a>
+            </li>
+        </ul>
 
         <!-- 右侧视图，根据选中的导航项显示不同组件 -->
         <div class="pathView">
             <div v-if="activeNav === 'setting'">
-                <component :is="settingComponent"></component>
+                <component :is="SettingComponent"></component>
             </div>
             <div v-if="activeNav === 'collect'">
                 <component :is="CollectComponent"></component>
@@ -79,69 +88,50 @@ watch(() => userInfoStore.userInfo.user_id, checkUserIsHaveSignin);
 .userContainer {
     display: flex;
     position: relative;
-    margin: 0;
-    padding: 0;
     width: 100%;
     height: 100%;
-    background-color: #f9f9f9;
     font-family: 'Arial', sans-serif;
 }
 
-.pathNav {
+/* 导航栏样式 */
+.homeNav {
+    position: fixed;
+    top: 80px;
+    z-index: 100;
+    background-color: #ffffff;
+    list-style: none;
     display: flex;
-    flex-direction: column;
-    width: 250px;
-    margin: 0px 0 0 0;
-    background-color: #F1F0E8;
-    padding: 20px 20px;
-    border-radius: 20px 0 0 20px;
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-    font-size: 18px;
-    height: auto;
+    justify-content: space-around;
+    border-radius: 50px;
+    padding: 6px 6px;
+    width: 320px;
+    margin-left: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.navItem {
-    width: 100%;
-    margin-bottom: 15px;
-    cursor: pointer;
-    font-size: 18px;
-    color: #333;
-    text-align: center;
-    padding: 12px;
-    transition: background-color 0.3s ease, color 0.3s ease, transform 0.3s ease;
+.homeNav a {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-.navItem:hover {
-    background-color: #f1f1f1;
-    border-radius: 10px;
-    transform: scale(1.05);
+.homeNav a:hover {
+    background-color: #cacaca;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-.navItem.active {
-    font-weight: bold;
-    color: #007bff;
-    background-color: #e0f7ff;
-    border-radius: 10px;
+.homeNav a.active {
+    color: white;
+    background-color: #00a1d6;
+    transform: scale(1.1);
 }
 
-/* 右侧视图样式 */
 .pathView {
     flex-grow: 1;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 20px 0px 0px 20px;
-    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 60px;
     overflow-y: auto;
-}
-
-.pathView>div {
-    margin-bottom: 20px;
-}
-
-.pathView>div {
-    padding: 20px;
-    background-color: #fafafa;
-    border-radius: 8px;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
 }
 </style>

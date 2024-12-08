@@ -1,95 +1,115 @@
 <script lang="ts" setup>
-import { getLatestUpdataBooks } from '@/api/book/latestUpdataBooks';
+import { ref, onMounted } from 'vue';
 import { getMostCollectBooks } from '@/api/book/mostCollectBooks';
-import { getMostRecommmendBooks } from '@/api/book/mostRecommmendBooks';
 import BookComponent from '@/component/home/BookComponent.vue';
+import { getLatestUpdataBooks } from '@/api/book/latestUpdataBooks';
+import { getMostRecommmendBooks } from '@/api/book/mostRecommmendBooks';
+import type { BookInfo } from '@/model/book';
 
-const lastestUpdateBooks = await getLatestUpdataBooks();
-const mostCollectBooks = await getMostCollectBooks();
-const mostRecommendBooks = await getMostRecommmendBooks();
+const latestUpdateBooks = ref<BookInfo[]>([]);
+const mostCollectBooks = ref<BookInfo[]>([]);
+const mostRecommendBooks = ref<BookInfo[]>([]);
+const bookInfoShow = ref<BookInfo[]>([]);
+const activeTab = ref('latest'); // 当前选中标签
+const loading = ref(true); // 加载状态
+const error = ref<string | null>(null); // 错误信息
+
+onMounted(async () => {
+    try {
+        loading.value = true;
+        latestUpdateBooks.value = await getLatestUpdataBooks();
+        bookInfoShow.value = latestUpdateBooks.value; // 默认显示最新更新
+    } catch (err) {
+        error.value = '加载数据失败，请稍后重试';
+        console.error(err);
+    } finally {
+        loading.value = false;
+    }
+});
+
+// 切换标签方法
+const switchTab = (tab: string) => {
+    activeTab.value = tab;
+    if (tab === 'latest') {
+        bookInfoShow.value = latestUpdateBooks.value;
+    } else if (tab === 'collect') {
+        bookInfoShow.value = mostCollectBooks.value;
+    } else if (tab === 'recommend') {
+        bookInfoShow.value = mostRecommendBooks.value;
+    }
+};
 </script>
 
 <template>
     <div class="home-container">
-        <!-- 最新更新 -->
-        <section class="section">
-            <div class="section-header">
-                <h2>最新更新</h2>
-            </div>
-            <div class="books">
-                <div v-for="(book, index) in lastestUpdateBooks" :key="index">
-                    <BookComponent :bookInfo="book" />
-                </div>
-            </div>
-        </section>
-
-        <!-- 最多收藏 -->
-        <section class="section">
-            <div class="section-header">
-                <h2>最多收藏</h2>
-            </div>
-            <div class="books">
-                <div v-for="(book, index) in mostCollectBooks" :key="index">
-                    <BookComponent :bookInfo="book" />
-                </div>
-            </div>
-        </section>
-
-        <!-- 最多推荐 -->
-        <section class="section">
-            <div class="section-header">
-                <h2>最多推荐</h2>
-            </div>
-            <div class="books">
-                <div v-for="(book, index) in mostRecommendBooks" :key="index">
-                    <BookComponent :bookInfo="book" />
-                </div>
-            </div>
-        </section>
+        <ul class="home-nav">
+            <li v-for="tab in ['latest', 'collect', 'recommend']" :key="tab">
+                <a href="#" :class="{ active: activeTab === tab }" @click.prevent="switchTab(tab)">
+                    {{ tab === 'latest' ? '最新更新' : tab === 'collect' ? '最多收藏' : '最多推荐' }}
+                </a>
+            </li>
+        </ul>
+        <div v-if="loading" class="loading">加载中...</div>
+        <div v-if="error" class="error">{{ error }}</div>
+        <div v-else class="book-show">
+            <BookComponent v-for="(bookInfo, index) in bookInfoShow" :key="index" :bookInfo="bookInfo" />
+        </div>
     </div>
 </template>
 
 <style scoped>
-/* 主容器样式 */
 .home-container {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    padding: 16px;
-    background-color: #f9f9f9;
+    background-color: #f2f2f8;
 }
 
-/* 各部分样式 */
-.section {
-    background-color: #fff;
-    padding: 16px;
-    border-radius: 8px;
+/* 导航栏样式 */
+.home-nav {
+    position: fixed;
+    top: 80px;
+    z-index: 100;
+    background-color: #ffffff;
+    list-style: none;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 50px;
+    padding: 10px 0px;
+    width: 320px;
+    margin-left: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.section-header {
-    margin-bottom: 16px;
-    border-bottom: 2px solid #ddd;
-    padding-bottom: 8px;
+.home-nav a {
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+    padding: 5px 15px;
+    border-radius: 50px;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-.section-header h2 {
-    font-size: 1.5rem;
-    color: #333;
-    margin: 0;
+.home-nav a:hover {
+    background-color: #cacaca;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
-/* 图书列表样式 */
-.books {
+.home-nav a.active {
+    color: white;
+    background-color: #00a1d6;
+    transform: scale(1.1);
+}
+
+.book-show {
+    margin-top: 40px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+    padding: 20px;
 }
 
-/* 响应式布局 */
-@media (max-width: 768px) {
-    .books {
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    }
+.loading,
+.error {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #777;
 }
 </style>

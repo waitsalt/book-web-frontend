@@ -36,7 +36,7 @@ const handleSearch = () => {
 /* 搜索框容器 */
 .searchBox {
     top: 10px;
-    height: 60px;
+    height: 46px;
     display: flex;
     position: fixed;
     align-items: center;
@@ -44,24 +44,20 @@ const handleSearch = () => {
     background: #ffffff;
     border-radius: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    /* 阴影效果 */
     overflow: hidden;
     width: 30vw;
-    /* max-width: 600px; */
-    /* 最大宽度 */
     transition: box-shadow 0.3s ease;
 }
 
 .searchBox:hover {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    /* 鼠标悬停时的阴影效果 */
 }
 
-/* 搜索框输入 */
 .searchInput {
     flex: 1;
     border: none;
     outline: none;
+    border-radius: 30px;
     padding: 10px 20px;
     font-size: 16px;
     color: #333;
@@ -69,20 +65,16 @@ const handleSearch = () => {
 
 .searchInput::placeholder {
     color: #aaa;
-    /* 占位符颜色 */
     font-style: italic;
 }
 
-/* 搜索按钮 */
 .searchIcon {
     position: relative;
-    height: 50px;
-    width: 50px;
+    height: 35px;
+    width: 35px;
     right: 5px;
     border-radius: 50%;
-    background-color: #c2c2b2;
-    /* 绿色背景 */
-    color: #fff;
+    color: #333;
     border: none;
     font-size: 16px;
     cursor: pointer;
@@ -93,8 +85,7 @@ const handleSearch = () => {
 }
 
 .searchIcon:hover {
-    background: #B4B8AB;
+    background: #e2e2e6;
     transform: scale(1.1);
-    /* 鼠标悬停时更深的绿色 */
 }
 </style>

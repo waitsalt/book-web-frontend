@@ -1,26 +1,22 @@
 <script lang="ts" setup>
+import { getLogout } from '@/api/user/logout';
 import { useUserStore } from '@/store/user';
 import router from '@/util/router';
 import { onMounted, ref, watch } from 'vue';
 import { AiOutlineMenu, AiOutlineUser } from 'vue-icons-plus/ai';
+import { Fa6RegCircleUser } from 'vue-icons-plus/fa6';
 
 // 1 --- start
 // 设置浮动卡片的显示与持续时间
 const cursorInIcon = ref(false);
 const cursorInCard = ref(false);
 const showTime = ref(700);
-const iconConfig = ref({
-    color: 'white',
-    size: 30,
-});
 
 const enterUserIconEvent = () => {
     cursorInIcon.value = true;
-    iconConfig.value.color = '#284B63';
 };
 
 const leaveUserIconEvent = () => {
-    iconConfig.value.color = 'white';
     setTimeout(() => {
         cursorInIcon.value = false;
     }, showTime.value);
@@ -35,14 +31,6 @@ const leavePathCardEvent = () => {
         cursorInCard.value = false;
     }, showTime.value);
 };
-
-const enterNologinUserIconEvent = () => {
-    nologinIconConfig.value.color = '#284B63';
-};
-
-const leaveNologinUserIconEvent = () => {
-    nologinIconConfig.value.color = 'white';
-};
 // 1 --- end
 
 
@@ -53,23 +41,19 @@ const goToPath = (path: string) => {
 
 // 用户是否登陆
 const userHasSignin = ref(false);
-const nologinIconConfig = ref({
-    color: 'white',
-    size: 30,
-});
 
 const userStore = useUserStore();
 
 const checkUserIsHaveSignin = () => {
-    if (userStore.userInfo.user_id != 0) {
+    if (userStore.userPublic.user_id != 0) {
         userHasSignin.value = true;
     } else {
         userHasSignin.value = false;
     }
 }
 
-const logoutEvent = () => {
-    userStore.$reset();
+const logoutEvent = async () => {
+    let res = await getLogout()
     router.push('/signin');
 }
 
@@ -78,37 +62,35 @@ onMounted(() => {
 })
 
 const userAvatarUrl = () => {
-    if (userStore.userInfo.avatar_url == "") {
+    if (userStore.userPublic.avatar_url == "") {
         return '/src/public/web.png'
     } else {
-        return userStore.userInfo.avatar_url;
+        return userStore.userPublic.avatar_url;
     }
 }
 
-watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
+watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
 </script>
 
 <template>
     <div class="userNavContainer">
         <!-- 用户图标 -->
         <div v-if="userHasSignin" class="userIcon" @mouseenter="enterUserIconEvent" @mouseleave="leaveUserIconEvent"
-            @click="goToPath('user')">
+            @click="goToPath('/user')">
             <img :src="userAvatarUrl()" alt="">
         </div>
         <!-- 未登录时显示的登录按钮 -->
-        <div v-else class="nologinUserIcon" @mouseenter="enterNologinUserIconEvent"
-            @mouseleave="leaveNologinUserIconEvent" :style="{ color: nologinIconConfig.color }"
-            @click="goToPath('signin')">
-            <AiOutlineUser :color="nologinIconConfig.color" :size="nologinIconConfig.size" /> <strong>登录</strong>
+        <div v-else class="nologinUserIcon" @click="goToPath('signin')">
+            <Fa6RegCircleUser /> <strong>登录</strong>
         </div>
     </div>
     <!-- 用户卡片 -->
     <div class="userCard" :class="{ hidden: !(cursorInCard || cursorInIcon) }" @mouseenter="enterPathCardEvent"
         @mouseleave="leavePathCardEvent">
-        <div class="userInfo">
-            <div><strong>用户:</strong> {{ userStore.userInfo.user_name }}</div>
-            <div><strong>邮箱:</strong> {{ userStore.userInfo.user_email }}</div>
-            <div><strong>等级:</strong> {{ userStore.userInfo?.level }}</div>
+        <div class="userPublic">
+            <div><strong>用户:</strong> {{ userStore.userPublic.user_name }}</div>
+            <div><strong>邮箱:</strong> {{ userStore.userPublic.user_email }}</div>
+            <div><strong>等级:</strong> {{ userStore.userPublic.level }}</div>
         </div>
         <div class="pathNav">
             <div class="setting" @click="goToPath('/user/setting')"><span class="icon">⚙️</span> 设置</div>
@@ -118,7 +100,7 @@ watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
             <div class="manage" @click="goToPath('/user/manage')"><span class="icon">📁</span> 管理</div>
         </div>
         <div class="userAction">
-            <div class="logout" @click="logoutEvent">
+            <div class="logout" @click="logoutEvent()">
                 退出登陆
             </div>
         </div>
@@ -137,12 +119,11 @@ watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
     position: fixed;
     top: 10px;
     right: 10px;
-    height: 60px;
-    width: 60px;
+    height: 46px;
+    width: 46px;
     border-radius: 50%;
-    background-color: #c2c2b2;
+    background-color: #e2f2f9;
     cursor: pointer;
-    border: 2px solid #EEF0EB;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -164,22 +145,24 @@ watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
     position: fixed;
     top: 10px;
     right: 15px;
-    height: 60px;
-    width: 130px;
+    height: 46px;
+    width: 110px;
     border-radius: 50px;
-    background: #c2c2b2;
+    background-color: #d9eef7;
     cursor: pointer;
-    border: 2px solid #EEF0EB;
     font-size: 20px;
     display: flex;
+    gap: 5px;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: #12a7d8;
+    transition: box-shadow 0.3s ease;
 }
 
 .nologinUserIcon:hover {
-    transform: scale(1.1);
+    /* transform: scale(1.1); */
+    background-color: #00a1d6;
+    color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -190,7 +173,7 @@ watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
 
 .userCard {
     position: absolute;
-    top: 90px;
+    top: 70px;
     right: 10px;
     width: 250px;
     background-color: #fff;
@@ -208,7 +191,7 @@ watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
 }
 
 /* 用户信息部分 */
-.userInfo {
+.userPublic {
     padding: 10px;
     margin: 15px;
     font-size: 14px;
@@ -217,7 +200,7 @@ watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
     border-radius: 5px;
 }
 
-.userInfo strong {
+.userPublic strong {
     color: #5a5a5a;
 }
 

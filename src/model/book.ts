@@ -1,3 +1,10 @@
+import type { Roll, RollCreate } from "./roll";
+
+type Book = {
+    book_info: BookInfo,
+    rolls: Roll[]
+}
+
 type BookInfo = {
     book_id: number,
     book_name: string,
@@ -16,34 +23,9 @@ type BookInfo = {
     book_status: string,
     latest_chapter_id: number,
     latest_chapter_name: string,
-    create_time: string,
-    update_time: string,
-}
-
-type Chapter = {
-    book_id: number,
-    book_name: string,
-    author_id: number,
-    author_name: string,
-    platform: string,
-    roll_id: number,
-    roll_name: string,
-    chapter_id: number,
-    chapter_name: string,
-    chapter_content: string,
-    create_time: string,
-    update_time: string,
-};
-
-type Roll = {
-    book_id: number,
-    book_name: string,
-    author_id: number,
-    author_name: string,
-    platform: string,
-    roll_id: number,
-    roll_name: string,
-    chapter_list: Chapter[],
+    collect: number,
+    recommend: number,
+    read_time: number,
     create_time: string,
     update_time: string,
 }
@@ -53,23 +35,6 @@ type BookSearchPayload = {
     author_name: string,
     platform: string,
 };
-
-type Book = {
-    book_info: BookInfo,
-    rolls: Roll[]
-}
-
-type ChapterCreate = {
-    chapter_id: number,
-    chapter_name: string,
-    chapter_content: string,
-}
-
-type RollCreate = {
-    roll_id: number,
-    roll_name: string,
-    chapter_list: ChapterCreate[],
-}
 
 type BookCreateInfo = {
     book_name: string,
@@ -91,13 +56,9 @@ type BookCreate = {
 }
 
 export type {
-    BookInfo,
-    BookSearchPayload,
-    Chapter,
-    Roll,
     Book,
-    ChapterCreate,
-    RollCreate,
-    BookCreateInfo,
+    BookInfo,
     BookCreate,
+    BookCreateInfo,
+    BookSearchPayload,
 }

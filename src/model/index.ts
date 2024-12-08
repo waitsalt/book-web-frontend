@@ -4,4 +4,4 @@ type AppResponse<T> = {
     data: T,
 };
 
-export { type AppResponse };
+export type { AppResponse };

@@ -45,11 +45,9 @@ type Roll = {
 const rolls = ref<Roll[]>([]);
 const rollRemove = (rollIndex: number) => {
     rolls.value.splice(rollIndex, 1);
-    updateRoll();
 };
 const chapterRemove = (rollIndex: number, chapterIndex: number) => {
     rolls.value[rollIndex].chapters.splice(chapterIndex, 1);
-    updateChapter();
 };
 const addNewRoll = () => {
     const newRoll: Roll = {
@@ -69,7 +67,6 @@ const addNewChapter = (rollIndex: number) => {
         isEditing: false,
     };
     rolls.value[rollIndex].chapters.push(newChapter);
-    updateChapter();
 };
 const changeFlod = (rollIndex: number) => {
     rolls.value[rollIndex].fold = !rolls.value[rollIndex].fold;
@@ -84,23 +81,6 @@ const editChapterTitle = (rollIndex: number, chapterIndex: number, newTitle: str
     rolls.value[rollIndex].chapters[chapterIndex].title = newTitle;
     rolls.value[rollIndex].chapters[chapterIndex].isEditing = false;
 };
-const updateRoll = () => {
-    for (let index = 0; index < rolls.value.length; index++) {
-        rolls.value[index].id = index;
-    }
-    updateChapter()
-}
-
-const updateChapter = () => {
-    let num = 0;
-    for (let rollIndex = 0; rollIndex < rolls.value.length; rollIndex++) {
-        for (let chapterIndex = 0; chapterIndex < rolls.value[rollIndex].chapters.length; chapterIndex++) {
-            const chapter = rolls.value[rollIndex].chapters[chapterIndex];
-            chapter.id = num;
-            num++;
-        }
-    }
-}
 
 const chapterShow = ref({
     rollId: 0,
@@ -190,7 +170,7 @@ const saveChapterShow = () => {
         <div class="createBookContent">
             <div class="bookMenu">
                 <button class="addRoll" @click="addNewRoll">新增卷</button>
-                <VueDraggable v-model="rolls" handle=".handle" class="menu" @update="updateRoll">
+                <VueDraggable v-model="rolls" handle=".handle" class="menu">
                     <div class="roll" v-for="(roll, rollIndex) in rolls" :key="rollIndex">
                         <div class="rollInfo">
                             <div class="icon handle">
@@ -210,8 +190,7 @@ const saveChapterShow = () => {
                             </div>
                         </div>
                         <div class="chapters" :class="{ hidden: roll.fold }">
-                            <VueDraggable handle=".handle" v-model="roll.chapters" group="chapter" ghost-class="ghost"
-                                @update="updateChapter">
+                            <VueDraggable handle=".handle" v-model="roll.chapters" group="chapter" ghost-class="ghost">
                                 <div v-for="(chapter, chapterIndex) in roll.chapters" class="chapter"
                                     :key="chapterIndex">
                                     <div class="chapterInfo" @click="chooseChapter(roll.id, chapter.id)">
@@ -219,7 +198,7 @@ const saveChapterShow = () => {
                                             <MdDragIndicator />
                                         </div>
                                         <div class="chapterTitle">
-                                            <span>{{ `第${chapter.id + 1}章 ` }}</span>
+                                            <span>{{ `第${chapterIndex + 1}章 ` }}</span>
                                             <input v-if="chapter.isEditing" v-model="chapter.title"
                                                 @blur="editChapterTitle(rollIndex, chapterIndex, chapter.title)"
                                                 class="editInput" autofocus />
@@ -247,6 +226,9 @@ const saveChapterShow = () => {
                     <button class="save" @click="saveChapterShow">保存</button>
                 </div>
             </div>
+            <div class="temp">
+                {{ rolls }}
+            </div>
         </div>
 
     </div>
@@ -257,10 +239,8 @@ const saveChapterShow = () => {
     display: flex;
     flex-direction: column;
     gap: 30px;
-    max-width: 1200px;
     margin: 0 auto;
     padding: 40px;
-    background-color: #f8f9fa;
     border-radius: 8px;
 }
 
@@ -269,7 +249,12 @@ const saveChapterShow = () => {
     padding: 20px;
     border: 1px solid #ddd;
     border-radius: 8px;
-    background-color: white;
+    background-color: #f8f9fa;
+}
+
+.CreateBookInfo {
+    margin: 0 auto;
+    max-width: 1200px;
 }
 
 .CreateBookInfo {
@@ -281,6 +266,7 @@ const saveChapterShow = () => {
 .CreateBookInfo .uploadSection {
     display: flex;
     flex-direction: column;
+    min-width: 500px;
     gap: 15px;
 }
 

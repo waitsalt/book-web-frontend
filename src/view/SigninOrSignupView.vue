@@ -2,14 +2,13 @@
 import { postSignin } from '@/api/user/signin';
 import { getCaptchaImage } from '@/api/util/captchaImage';
 import { uuid } from '@/api/util/uuid';
-import type { UserAuth, UserClaims, UserSigninPayload } from '@/model/user';
+import type { UserAuth, UserClaims, UserSigninPayload, UserSignupPayload } from '@/model/user';
 import { useUserStore } from '@/store/user';
 import router from '@/util/router';
 import { jwtDecode } from 'jwt-decode';
 import { onMounted, ref, watch } from 'vue';
 
 const isSignin = ref(true);
-const captchaImageKey = ref(uuid());
 const captchaImageData = ref('');
 const btnText = ref('发送邮件');
 const disableBtn = ref(false);
@@ -17,11 +16,24 @@ const disableBtn = ref(false);
 
 const userStore = useUserStore();
 
-const userName = ref('');
-const userEmail = ref('');
-const userPassword = ref('');
-const captchaImage = ref('');
-const captchaEmail = ref('');
+const captcha_image_key = uuid();
+
+const userSigninPayload = ref<UserSigninPayload>({
+    user_name: '',
+    user_password: '',
+    captcha_image_key: uuid(),
+    captcha_image: ''
+});
+
+const userSignupPayload = ref<UserSignupPayload>({
+    user_name: '',
+    user_password: '',
+    user_email: '',
+    avatar_url: '',
+    captcha_image_key: uuid(),
+    captcha_image: '',
+    captcha_email: ''
+});
 
 // 获取当前路径并检查是否为登录页
 const localUrl = window.location.href;
@@ -32,7 +44,7 @@ const checkIsSignin = () => {
 
 // 检查用户是否已登录
 const checkUserIsHaveSignin = () => {
-    if (userStore.userInfo.user_id != 0) {
+    if (userStore.userPublic.user_id != 0) {
         router.push('/user');
     }
 };
@@ -49,7 +61,7 @@ const goToSignin = () => {
 
 // 刷新验证码
 const refreshCaptchaImage = async () => {
-    captchaImageData.value = await getCaptchaImage(captchaImageKey.value) as string;
+    captchaImageData.value = await getCaptchaImage(userSigninPayload.value.captcha_image_key) as string;
 };
 
 // 邮件发送按钮
@@ -68,28 +80,18 @@ const sendEmailEvent = () => {
 
 // 登陆事件
 const signinEvent = async () => {
-    let userSigninPayload: UserSigninPayload = {
-        user_name: userName.value,
-        user_password: userPassword.value,
-        captcha_image: captchaImage.value,
-        captcha_image_key: captchaImageKey.value,
-    };
-    let userAuth: UserAuth = await postSignin(userSigninPayload);
-    userStore.updateUserAuth(userAuth);
-    let userClaims: UserClaims = jwtDecode(userAuth.access_token);
-    userStore.updateUserInfo(userClaims.user_info);
-    console.log(userClaims);
+    let userAuth: UserAuth = await postSignin(userSigninPayload.value);
     isSignin.value = true;
 }
 
-onMounted(() => {
+onMounted(async () => {
     checkUserIsHaveSignin();
     checkIsSignin();
-    refreshCaptchaImage();
+    await refreshCaptchaImage();
 });
 
 // 监听用户状态的变化
-watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
+watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
 </script>
 
 <template>
@@ -99,16 +101,18 @@ watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
             <div class="form-content">
                 <div class="input-group">
                     <label for="username">用户名:</label>
-                    <input v-model="userName" id="username" type="text" placeholder="请输入用户名" />
+                    <input v-model="userSigninPayload.user_name" id="username" type="text" placeholder="请输入用户名" />
                 </div>
                 <div class="input-group">
                     <label for="password">密码:</label>
-                    <input v-model="userPassword" id="password" type="password" placeholder="请输入密码" />
+                    <input v-model="userSigninPayload.user_password" id="password" type="password"
+                        placeholder="请输入密码" />
                 </div>
                 <div class="input-group">
                     <label for="captchaImage">图形验证码:</label>
                     <div class="captchaContainer">
-                        <input v-model="captchaImage" id="captchaImage" type="text" placeholder="请输入验证码" />
+                        <input v-model="userSigninPayload.captcha_image" id="captchaImage" type="text"
+                            placeholder="请输入验证码" />
                         <img :src="captchaImageData" alt="验证码" class="captcha-image" @click="refreshCaptchaImage" />
                     </div>
                 </div>
@@ -125,27 +129,30 @@ watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
             <div class="form-content">
                 <div class="input-group">
                     <label for="username">用户名:</label>
-                    <input v-model="userName" id="username" type="text" placeholder="请输入用户名" />
+                    <input v-model="userSignupPayload.user_name" id="username" type="text" placeholder="请输入用户名" />
                 </div>
                 <div class="input-group">
                     <label for="password">密码:</label>
-                    <input v-model="userPassword" id="password" type="password" placeholder="请输入密码" />
+                    <input v-model="userSignupPayload.user_password" id="password" type="password"
+                        placeholder="请输入密码" />
                 </div>
                 <div class="input-group">
                     <label for="email">邮箱:</label>
-                    <input v-model="userEmail" id="email" type="email" placeholder="请输入邮箱" />
+                    <input v-model="userSignupPayload.user_email" id="email" type="email" placeholder="请输入邮箱" />
                 </div>
                 <div class="input-group">
                     <label for="captchaImage">图形验证码:</label>
                     <div class="captchaContainer">
-                        <input v-model="captchaImage" id="captchaImage" type="text" placeholder="请输入验证码" />
+                        <input v-model="userSignupPayload.captcha_image" id="captchaImage" type="text"
+                            placeholder="请输入验证码" />
                         <img :src="captchaImageData" alt="验证码" class="captcha-image" @click="refreshCaptchaImage" />
                     </div>
                 </div>
                 <div class="input-group">
                     <label for="captchaEmail">邮箱验证码:</label>
                     <div class="captchaContainer">
-                        <input v-model="captchaEmail" id="captchaEmail" type="text" placeholder="请输入邮箱验证码" />
+                        <input v-model="userSignupPayload.captcha_email" id="captchaEmail" type="text"
+                            placeholder="请输入邮箱验证码" />
                         <button class="verifyBtn" :disabled="disableBtn" @click="sendEmailEvent">{{ btnText }}</button>
                     </div>
                 </div>
@@ -165,7 +172,7 @@ watch(() => userStore.userInfo.user_id, checkUserIsHaveSignin);
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100%;
+    height: 80vh;
     font-family: 'Arial', sans-serif;
 }
 

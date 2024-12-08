@@ -1,4 +1,4 @@
-import request from "@/util/request";
+import { request } from "@/util/request";
 import type { AppResponse } from "@/model";
 
 async function getCaptchaImage(captchaImageKey: string) {

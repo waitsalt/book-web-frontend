@@ -15,7 +15,7 @@ type UserSigninPayload = {
     captcha_image_key: string,
 };
 
-type UserInfo = {
+type UserPublic = {
     user_id: number,
     user_name: string,
     user_email: string,
@@ -35,21 +35,31 @@ type UserAuth = {
 type UserClaims = {
     iat: number,
     exp: number,
-    user_info: UserInfo,
+    user_public: UserPublic,
 }
 
 type UserRefreshClaims = {
-
     iat: number,
     exp: number,
     user_id: number,
 }
 
+type UserUpdateAvatarUrlPayload = {
+    avatar_url: string,
+}
+
+type UserBaseInfoPayload = {
+    avatar_url: string,
+    user_name: string,
+}
+
 export type {
     UserSigninPayload,
     UserSignupPayload,
-    UserInfo,
+    UserPublic,
     UserAuth,
     UserClaims,
     UserRefreshClaims,
+    UserUpdateAvatarUrlPayload,
+    UserBaseInfoPayload,
 }

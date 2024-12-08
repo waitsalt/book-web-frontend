@@ -1,4 +1,5 @@
-import type { BookInfo, Roll } from "@/model/book";
+import type { BookInfo } from "@/model/book";
+import type { Roll } from "@/model/roll";
 import { defineStore } from "pinia";
 
 type State = {
@@ -26,6 +27,8 @@ const useBookStore = defineStore('book', {
             book_status: '',
             latest_chapter_id: 0,
             latest_chapter_name: '',
+            collect: 0,
+            recommend: 0,
             create_time: '',
             update_time: '',
         },

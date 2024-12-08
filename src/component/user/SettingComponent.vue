@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import type { UserInfo } from "@/model/user";
+import { postUpdateAvatarUrl } from "@/api/user/updateAvatarUrl";
+import type { UserPublic, UserUpdateAvatarUrlPayload } from "@/model/user";
 import { useUserStore } from "@/store/user";
 import { ref } from "vue";
 
 // 模拟用户数据
 const userStore = useUserStore();
-const userInfo = ref<UserInfo>(userStore.userInfo);
+const userPublic = ref<UserPublic>(userStore.userPublic);
 
 // 表单状态
 const passwordForm = ref({
@@ -20,14 +21,20 @@ const emailForm = ref({
 });
 
 // 方法
-const updateUserInfo = () => {
-    console.log("更新的用户信息:", userInfo.value);
-    alert("用户信息已保存！");
+const updateUserInfo = async () => {
+    let userUpdateAvatarUrlPayload: UserUpdateAvatarUrlPayload = {
+        avatar_url: userPublic.value.avatar_url,
+    };
+    let res = await postUpdateAvatarUrl(userUpdateAvatarUrlPayload);
 };
 
 const updatePassword = () => {
     if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
         alert("新密码与确认密码不一致！");
+        return;
+    }
+    if (passwordForm.value.newPassword === passwordForm.value.oldPassword) {
+        alert("新密码与原密码一致,请修改！");
         return;
     }
     console.log("密码修改请求:", passwordForm.value);
@@ -56,24 +63,24 @@ const verifyEmail = () => {
             <h2>用户基本信息</h2>
             <div class="form-group">
                 <label>用户 ID:</label>
-                <p>{{ userInfo.user_id }}</p>
+                <p>{{ userPublic.user_id }}</p>
             </div>
             <div class="form-group">
                 <label>头像</label>
-                <img :src="userInfo.avatar_url" alt="" class="avatar" />
-                <input type="text" v-model="userInfo.avatar_url" placeholder="请输入头像 URL" />
+                <img :src="userPublic.avatar_url" alt="" class="avatar" />
+                <input type="text" v-model="userPublic.avatar_url" placeholder="请输入头像 URL" />
             </div>
             <div class="form-group">
                 <label>用户名</label>
-                <input type="text" v-model="userInfo.user_name" placeholder="请输入用户名" />
+                <p>{{ userPublic.user_name }}</p>
             </div>
             <div class="form-group">
                 <label>用户身份</label>
                 <p>
                     {{
-                        userInfo.identity === 0
+                        userPublic.identity === 0
                             ? "普通用户"
-                            : userInfo.identity === 1
+                            : userPublic.identity === 1
                                 ? "管理员"
                                 : "超级管理员"
                     }}
@@ -83,9 +90,9 @@ const verifyEmail = () => {
                 <label>状态</label>
                 <p>
                     {{
-                        userInfo.status === 0
+                        userPublic.status === 0
                             ? "正常"
-                            : userInfo.status === 1
+                            : userPublic.status === 1
                                 ? "被封禁"
                                 : "删除"
                     }}
@@ -93,11 +100,11 @@ const verifyEmail = () => {
             </div>
             <div class="form-group">
                 <label>创建时间</label>
-                <p>{{ userInfo.create_time }}</p>
+                <p>{{ userPublic.create_time }}</p>
             </div>
             <div class="form-group">
                 <label>更新时间</label>
-                <p>{{ userInfo.update_time }}</p>
+                <p>{{ userPublic.update_time }}</p>
             </div>
             <button class="save-button" @click="updateUserInfo">保存基本信息</button>
         </section>

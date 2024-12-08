@@ -1,4 +1,5 @@
 import TempComponent from "@/component/user/TempComponent.vue";
+import BookView from "@/view/BookView.vue";
 import HomeView from "@/view/HomeView.vue";
 import SigninOrSignupView from "@/view/SigninOrSignupView.vue";
 import UserView from "@/view/UserView.vue";
@@ -14,6 +15,7 @@ const routes = [
     { path: '/user/history', component: UserView },
     { path: '/user/manage', component: UserView },
     { path: '/user/upload', component: UserView },
+    { path: '/book/:book_id', component: BookView },
     { path: '/temp', component: TempComponent }
 ];
 

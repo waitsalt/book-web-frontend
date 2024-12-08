@@ -9,4 +9,6 @@ type Collect = {
     create_time: string,
 }
 
-export type { Collect };
+export type {
+    Collect
+};
