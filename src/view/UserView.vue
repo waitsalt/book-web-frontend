@@ -54,12 +54,11 @@ watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
 <template>
     <div class="userContainer">
         <!-- 左侧导航栏 -->
-        <ul class="homeNav">
-            <li v-for="tab in tabList" :key="tab">
-                <a href="#" :class="{ active: activeNav === tab }" @click.prevent="selectNav(tab)">
-                    {{ tabText(tab) }}
-                </a>
-            </li>
+        <ul class="userNav">
+            <a v-for="tab in tabList" :key="tab" href="#" :class="{ active: activeNav === tab }"
+                @click.prevent="selectNav(tab)">
+                {{ tabText(tab) }}
+            </a>
         </ul>
 
         <!-- 右侧视图，根据选中的导航项显示不同组件 -->
@@ -90,11 +89,12 @@ watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
     position: relative;
     width: 100%;
     height: 100%;
+    background-color: #f2f2f8;
     font-family: 'Arial', sans-serif;
 }
 
 /* 导航栏样式 */
-.homeNav {
+.userNav {
     position: fixed;
     top: 80px;
     z-index: 100;
@@ -109,29 +109,28 @@ watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.homeNav a {
+.userNav a {
     text-decoration: none;
     color: black;
     font-size: 16px;
-    padding: 5px 15px;
+    padding: 3px 15px;
     border-radius: 50px;
     transition: background-color 0.3s, transform 0.2s;
 }
 
-.homeNav a:hover {
+.userNav a:hover {
     background-color: #cacaca;
     transition: background-color 0.3s, transform 0.2s;
 }
 
-.homeNav a.active {
+.userNav a.active {
     color: white;
     background-color: #00a1d6;
-    transform: scale(1.1);
 }
 
 .pathView {
     flex-grow: 1;
-    margin-top: 60px;
+    margin-top: 10px;
     overflow-y: auto;
 }
 </style>

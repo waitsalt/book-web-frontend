@@ -6,17 +6,26 @@ import SearchComponent from './component/SearchComponent.vue';
 import UserNavComponent from './component/UserNavComponent.vue';
 import type { UserClaims, UserRefreshClaims } from './model/user';
 import { useUserStore } from './store/user';
+import { getRefreshAccessToken } from './api/user/refreshAccessToken';
+import { onMounted } from 'vue';
 
 const userStore = useUserStore()
 const userAuth = userStore.userAuth;
 
-const checkUserAuth = () => {
-    if (userAuth.refresh_token !== '') {
+const checkUserAuth = async () => {
+    const userRefreshClaims: UserRefreshClaims = jwtDecode(userAuth.refresh_token);
+    if (userAuth.refresh_token !== '' && userRefreshClaims.exp > Date.now()) {
         const userClaims: UserClaims = jwtDecode(userAuth.access_token);
-        const userRefreshClaims: UserRefreshClaims = jwtDecode(userAuth.refresh_token);
-
+        if (userAuth.access_token === '' || userClaims.exp - 5 * 60 * 1000 < Date.now()) {
+            let res = await getRefreshAccessToken();
+        }
     }
 }
+
+onMounted(async () => {
+    await checkUserAuth();
+    setInterval(await checkUserAuth, 5 * 60 * 1000);
+})
 
 </script>
 

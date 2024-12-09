@@ -61,14 +61,6 @@ onMounted(() => {
     checkUserIsHaveSignin()
 })
 
-const userAvatarUrl = () => {
-    if (userStore.userPublic.avatar_url == "") {
-        return '/src/public/web.png'
-    } else {
-        return userStore.userPublic.avatar_url;
-    }
-}
-
 watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
 </script>
 
@@ -77,7 +69,7 @@ watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
         <!-- 用户图标 -->
         <div v-if="userHasSignin" class="userIcon" @mouseenter="enterUserIconEvent" @mouseleave="leaveUserIconEvent"
             @click="goToPath('/user')">
-            <img :src="userAvatarUrl()" alt="">
+            <img :src="userStore.userPublic.avatar_url" alt="" class="avatar">
         </div>
         <!-- 未登录时显示的登录按钮 -->
         <div v-else class="nologinUserIcon" @click="goToPath('signin')">
@@ -138,6 +130,19 @@ watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
 .userIcon img {
     width: 100%;
     height: 100%;
+}
+
+.avatar {
+    display: block;
+    background-color: #cccccc;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 /* 未登录时显示的登录按钮样式 */

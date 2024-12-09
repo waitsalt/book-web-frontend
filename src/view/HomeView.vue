@@ -72,8 +72,8 @@ const switchTab = (tab: string) => {
     display: flex;
     justify-content: space-around;
     border-radius: 50px;
-    padding: 10px 0px;
-    width: 320px;
+    padding: 5px 0px;
+    width: 290px;
     margin-left: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -99,7 +99,7 @@ const switchTab = (tab: string) => {
 }
 
 .book-show {
-    margin-top: 40px;
+    margin-top: 30px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
     gap: 40px;

@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import { postSignin } from '@/api/user/signin';
+import { postSignup } from '@/api/user/signup';
+import { getCaptchaEmail } from '@/api/util/captchaEmail';
 import { getCaptchaImage } from '@/api/util/captchaImage';
 import { uuid } from '@/api/util/uuid';
 import type { UserAuth, UserClaims, UserSigninPayload, UserSignupPayload } from '@/model/user';
@@ -21,7 +23,7 @@ const captcha_image_key = uuid();
 const userSigninPayload = ref<UserSigninPayload>({
     user_name: '',
     user_password: '',
-    captcha_image_key: uuid(),
+    captcha_image_key: captcha_image_key,
     captcha_image: ''
 });
 
@@ -30,7 +32,7 @@ const userSignupPayload = ref<UserSignupPayload>({
     user_password: '',
     user_email: '',
     avatar_url: '',
-    captcha_image_key: uuid(),
+    captcha_image_key: captcha_image_key,
     captcha_image: '',
     captcha_email: ''
 });
@@ -61,11 +63,12 @@ const goToSignin = () => {
 
 // 刷新验证码
 const refreshCaptchaImage = async () => {
-    captchaImageData.value = await getCaptchaImage(userSigninPayload.value.captcha_image_key) as string;
+    captchaImageData.value = await getCaptchaImage(captcha_image_key) as string;
 };
 
 // 邮件发送按钮
-const sendEmailEvent = () => {
+const sendEmailEvent = async () => {
+    let res = await getCaptchaEmail(userSignupPayload.value.user_email);
     disableBtn.value = true;
     let count = 60;
     const interval = setInterval(() => {
@@ -82,6 +85,11 @@ const sendEmailEvent = () => {
 const signinEvent = async () => {
     let userAuth: UserAuth = await postSignin(userSigninPayload.value);
     isSignin.value = true;
+}
+
+const signupEvent = async () => {
+    let res = await postSignup(userSignupPayload.value);
+    router.push('/user/signin');
 }
 
 onMounted(async () => {
@@ -159,7 +167,7 @@ watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
                 <div class="links">
                     <span class="link" @click="goToSignin">已有账号？</span>
                 </div>
-                <button class="submitBtn">注册</button>
+                <button class="submitBtn" @click="signupEvent">注册</button>
             </div>
         </div>
     </div>

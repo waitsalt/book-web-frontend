@@ -36,6 +36,12 @@ type BookSearchPayload = {
     platform: string,
 };
 
+type BookVerifyPayload = {
+    book_name: string,
+    author_name: string,
+    platform: string,
+};
+
 type BookCreateInfo = {
     book_name: string,
     author_name: string,
@@ -61,4 +67,5 @@ export type {
     BookCreate,
     BookCreateInfo,
     BookSearchPayload,
+    BookVerifyPayload,
 }
