@@ -42,16 +42,15 @@ const switchTab = (tab: string) => {
 
 <template>
     <div class="home-container">
-        <ul class="home-nav">
-            <li v-for="tab in ['latest', 'collect', 'recommend']" :key="tab">
-                <a href="#" :class="{ active: activeTab === tab }" @click.prevent="switchTab(tab)">
-                    {{ tab === 'latest' ? '最新更新' : tab === 'collect' ? '最多收藏' : '最多推荐' }}
-                </a>
-            </li>
+        <ul class="homeNav">
+            <a v-for="tab in ['latest', 'collect', 'recommend']" href="#" :class="{ active: activeTab === tab }"
+                @click.prevent="switchTab(tab)">
+                {{ tab === 'latest' ? '最新更新' : tab === 'collect' ? '最多收藏' : '最多推荐' }}
+            </a>
         </ul>
         <div v-if="loading" class="loading">加载中...</div>
         <div v-if="error" class="error">{{ error }}</div>
-        <div v-else class="book-show">
+        <div v-else class="bookShow">
             <BookComponent v-for="(bookInfo, index) in bookInfoShow" :key="index" :bookInfo="bookInfo" />
         </div>
     </div>
@@ -60,45 +59,44 @@ const switchTab = (tab: string) => {
 <style scoped>
 .home-container {
     background-color: #f2f2f8;
+    font-family: 'Arial', sans-serif;
 }
 
 /* 导航栏样式 */
-.home-nav {
+.homeNav {
     position: fixed;
-    top: 80px;
+    top: 70px;
     z-index: 100;
     background-color: #ffffff;
-    list-style: none;
     display: flex;
     justify-content: space-around;
     border-radius: 50px;
-    padding: 5px 0px;
+    padding: 5px 5px;
     width: 290px;
     margin-left: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.home-nav a {
+.homeNav a {
     text-decoration: none;
     color: black;
     font-size: 16px;
-    padding: 5px 15px;
+    padding: 3px 15px;
     border-radius: 50px;
     transition: background-color 0.3s, transform 0.2s;
 }
 
-.home-nav a:hover {
+.homeNav a:hover {
     background-color: #cacaca;
     transition: background-color 0.3s, transform 0.2s;
 }
 
-.home-nav a.active {
+.homeNav a.active {
     color: white;
     background-color: #00a1d6;
-    transform: scale(1.1);
 }
 
-.book-show {
+.bookShow {
     margin-top: 30px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));

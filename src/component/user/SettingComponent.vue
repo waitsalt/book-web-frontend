@@ -1,7 +1,11 @@
 <script lang="ts" setup>
 import { postUpdateAvatarUrl } from "@/api/user/updateAvatarUrl";
-import type { UserPublic, UserUpdateAvatarUrlPayload } from "@/model/user";
+import { postUpdateEmail } from "@/api/user/updateEmail";
+import { postUpdatePassword } from "@/api/user/updatePassword";
+import { postVerifyEmail } from "@/api/user/verifyEmail";
+import type { UserPublic, UserUpdateAvatarUrlPayload, UserUpdateEmailPayload, UserUpdatePasswordPayload, UserVerifyEmailPayload } from "@/model/user";
 import { useUserStore } from "@/store/user";
+import { addNotification } from "@/util/notify";
 import { ref } from "vue";
 
 // 模拟用户数据
@@ -20,15 +24,30 @@ const emailForm = ref({
     emailCode: "",
 });
 
-// 方法
 const updateUserInfo = async () => {
     let userUpdateAvatarUrlPayload: UserUpdateAvatarUrlPayload = {
         avatar_url: userPublic.value.avatar_url,
     };
-    let res = await postUpdateAvatarUrl(userUpdateAvatarUrlPayload);
+    try {
+        let res = await postUpdateAvatarUrl(userUpdateAvatarUrlPayload);
+        if (res.code === 200) {
+            addNotification({
+                type: 'success',
+                title: '保存信息',
+                content: '保存成功',
+            })
+        }
+    }
+    catch {
+        addNotification({
+            type: 'error',
+            title: '保存信息',
+            content: '保存失败'
+        })
+    }
 };
 
-const updatePassword = () => {
+const updatePassword = async () => {
     if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
         alert("新密码与确认密码不一致！");
         return;
@@ -37,22 +56,62 @@ const updatePassword = () => {
         alert("新密码与原密码一致,请修改！");
         return;
     }
-    console.log("密码修改请求:", passwordForm.value);
-    alert("密码已修改！");
-    passwordForm.value.oldPassword = "";
-    passwordForm.value.newPassword = "";
-    passwordForm.value.confirmPassword = "";
+    let userUpdatePasswordPayload: UserUpdatePasswordPayload = {
+        old_password: passwordForm.value.oldPassword,
+        new_password: passwordForm.value.newPassword,
+    }
+    try {
+        let res = await postUpdatePassword(userUpdatePasswordPayload);
+        if (res.code === 200) {
+            addNotification({
+                type: 'success',
+                title: '修改密码',
+                content: '修改成功',
+            })
+        } else if (res.code === 1008) {
+            addNotification({
+                type: 'error',
+                title: '修改密码',
+                content: '用户原密码错误'
+            })
+        }
+    }
+    catch {
+        addNotification({
+            type: 'error',
+            title: '修改密码',
+            content: '修改失败'
+        })
+    }
 };
 
-const updateEmail = () => {
-    console.log("邮箱修改请求:", emailForm.value);
-    alert("邮箱验证成功，邮箱已修改！");
-    emailForm.value.newEmail = "";
-    emailForm.value.emailCode = "";
+
+const btnText = ref('验证邮箱');
+const disableBtn = ref(false);
+const updateEmail = async () => {
+    let userUpdateEmailPayload: UserUpdateEmailPayload = {
+        user_email: emailForm.value.newEmail,
+        captcha_email: emailForm.value.emailCode,
+    }
+    let res = await postUpdateEmail(userUpdateEmailPayload);
+    disableBtn.value = true;
+    let count = 60;
+    const interval = setInterval(() => {
+        btnText.value = `${count--}秒`;
+        if (count < 0) {
+            clearInterval(interval);
+            disableBtn.value = false;
+            btnText.value = '验证邮箱';
+        };
+    }, 1000);
+
 };
 
-const verifyEmail = () => {
-    alert("邮箱验证请求已发送！");
+const verifyEmailEvent = async () => {
+    let userVerifyEmailPayload: UserVerifyEmailPayload = {
+        user_email: emailForm.value.newEmail,
+    }
+    let res = await postVerifyEmail(userVerifyEmailPayload);
 };
 </script>
 
@@ -135,8 +194,8 @@ const verifyEmail = () => {
                 <label for="newEmail">新邮箱</label>
                 <div class="email-input-container">
                     <input type="email" id="newEmail" v-model="emailForm.newEmail" placeholder="请输入新邮箱地址" />
-                    <button class="verify-button" @click="verifyEmail">
-                        验证邮箱
+                    <button :disabled="disableBtn" class="verify-button" @click="verifyEmailEvent">
+                        {{ btnText }}
                     </button>
                 </div>
             </div>

@@ -1,15 +1,18 @@
 <script lang="ts" setup>
 import { postVerifyBook } from '@/api/book/verify_book';
+import { postSearchBook } from '@/api/util/searchBook';
 import type { BookCreateInfo } from '@/model/book';
+import { useUserStore } from '@/store/user';
 import { addNotification } from '@/util/notify';
 import { ref } from 'vue';
-const uploadedBooks = ref<BookCreateInfo[]>([]); // 存储上传的书籍
+
+const userStore = useUserStore()
 const bookCreateInfo = ref<BookCreateInfo>({
     book_name: '',
     author_name: '',
     platform: '',
-    user_id: 1,
-    user_name: 'root',
+    uploader_id: userStore.userPublic.user_id,
+    uploader_name: userStore.userPublic.user_name,
     cover_url: '',
     source_url: '',
     book_tags: '',
@@ -23,7 +26,7 @@ const verifyBookEvent = async () => {
         book_name: bookCreateInfo.value.book_name,
         platform: bookCreateInfo.value.platform,
     });
-    if (res === 200) {
+    if (res.code === 200) {
         disabledNext.value = false;
     }
 }
@@ -133,10 +136,9 @@ const tabNext = () => {
 .uploadNav {
     position: fixed;
     right: 20px;
-    top: 80px;
+    top: 70px;
     z-index: 100;
     background-color: #ffffff;
-    list-style: none;
     display: flex;
     justify-content: space-around;
     border-radius: 50px;

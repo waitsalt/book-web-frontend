@@ -48,9 +48,23 @@ type UserUpdateAvatarUrlPayload = {
     avatar_url: string,
 }
 
+type UserUpdateEmailPayload = {
+    user_email: string,
+    captcha_email: string,
+}
+
+type UserVerifyEmailPayload = {
+    user_email: string,
+}
+
 type UserBaseInfoPayload = {
     avatar_url: string,
     user_name: string,
+}
+
+type UserUpdatePasswordPayload = {
+    old_password: string,
+    new_password: string,
 }
 
 export type {
@@ -60,6 +74,9 @@ export type {
     UserAuth,
     UserClaims,
     UserRefreshClaims,
+    UserUpdateEmailPayload,
     UserUpdateAvatarUrlPayload,
     UserBaseInfoPayload,
+    UserVerifyEmailPayload,
+    UserUpdatePasswordPayload,
 }

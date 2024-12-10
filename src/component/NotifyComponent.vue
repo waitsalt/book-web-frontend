@@ -13,16 +13,16 @@ import { EpSuccessFilled } from 'vue-icons-plus/ep';
             <div class="header">
                 <!-- 图标显示根据通知类型 -->
                 <div class="icon" v-if="notification.type === 'success'">
-                    <EpSuccessFilled size="30px" color="#4caf50" />
+                    <EpSuccessFilled color="#4caf50" />
                 </div>
                 <div class="icon" v-if="notification.type === 'info'">
-                    <AiFillInfoCircle size="30px" color="#2196f3" />
+                    <AiFillInfoCircle color="#2196f3" />
                 </div>
                 <div class="icon" v-if="notification.type === 'warning'">
-                    <AiFillWarning size="30px" color="#ff9800" />
+                    <AiFillWarning color="#ff9800" />
                 </div>
                 <div class="icon" v-if="notification.type === 'error'">
-                    <BsXCircleFill size="30px" color="#f83434" />
+                    <BsXCircleFill color="#f83434" />
                 </div>
                 <div class="title">
                     {{ notification.title }}
@@ -44,97 +44,106 @@ import { EpSuccessFilled } from 'vue-icons-plus/ep';
     display: flex;
     flex-direction: column;
     gap: 10px;
+    padding: 10px;
 }
 
 .notification {
     display: flex;
     flex-direction: column;
     padding: 10px;
-    border-radius: 8px;
-    min-width: 250px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    border-radius: 10px;
+    min-width: 280px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     opacity: 0;
-    animation: slideIn 0.5s forwards;
+    animation: slideIn 0.5s forwards, fadeOut 0.5s 4s forwards;
+    transition: all 0.3s ease;
 }
 
 .notification.success {
-    background-color: #e8f5e9;
-    border-left: 5px solid #4caf50;
+    background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
+    border-left: 6px solid #4caf50;
 }
 
 .notification.info {
-    background-color: #e3f2fd;
-    border-left: 5px solid #2196f3;
+    background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+    border-left: 6px solid #2196f3;
 }
 
 .notification.warning {
-    background-color: #fff3e0;
-    border-left: 5px solid #ff9800;
+    background: linear-gradient(145deg, #fff3e0, #ffecb3);
+    border-left: 6px solid #ff9800;
 }
 
 .notification.error {
-    background-color: #ffebee;
-    border-left: 5px solid #f83434;
+    background: linear-gradient(145deg, #ffebee, #ffcdd2);
+    border-left: 6px solid #f83434;
 }
 
 .header {
     display: flex;
-    align-items: flex-end;
-    /* 图标和标题底部对齐 */
+    align-items: center;
     justify-content: space-between;
     width: 100%;
     position: relative;
-    /* 关闭按钮定位的基础 */
 }
 
 .icon {
     margin-right: 10px;
+    padding: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .title {
-    top: 0;
     font-weight: bold;
     font-size: 20px;
-    flex-grow: 1;
-    /* 占据可用空间 */
     color: #333;
+    flex-grow: 1;
+    margin-right: 10px;
 }
 
+
 .closeButton {
-    position: absolute;
-    top: 0;
-    right: 0;
     background: none;
     border: none;
-    font-size: 20px;
+    font-size: 22px;
     color: #888;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: color 0.2s, transform 0.2s;
 }
 
 .closeButton:hover {
     color: #333;
+    transform: scale(1.2);
 }
 
 .content {
-    margin-top: 5px;
-    font-size: 25px;
+    margin-top: 8px;
+    font-size: 15px;
     color: #555;
     text-align: left;
-    /* 确保内容从左到右排列 */
 }
 
-/* 动画 */
 @keyframes slideIn {
     from {
-        transform: translateY(-20px);
+        transform: translateY(-30px);
         opacity: 0;
     }
 
     to {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
     }
 }
 </style>

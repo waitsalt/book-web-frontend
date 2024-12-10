@@ -90,4 +90,9 @@ request_refresh_auth.interceptors.response.use(
     }
 )
 
-export { request, request_auth, request_refresh_auth };
+// 不进行认证
+const request_util = axios.create({
+    baseURL: base_url,
+    timeout: 5000
+});
+export { request, request_auth, request_refresh_auth, request_util };

@@ -96,10 +96,9 @@ watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
 /* 导航栏样式 */
 .userNav {
     position: fixed;
-    top: 80px;
+    top: 70px;
     z-index: 100;
     background-color: #ffffff;
-    list-style: none;
     display: flex;
     justify-content: space-around;
     border-radius: 50px;
@@ -130,7 +129,7 @@ watch(() => userStore.userPublic.user_id, checkUserIsHaveSignin);
 
 .pathView {
     flex-grow: 1;
-    margin-top: 10px;
+    margin-top: 50px;
     overflow-y: auto;
 }
 </style>

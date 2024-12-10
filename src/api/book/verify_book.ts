@@ -4,8 +4,7 @@ import { request } from "@/util/request";
 
 async function postVerifyBook(BookVerifyPayload: BookVerifyPayload) {
     let res: AppResponse<null> = await request.post(`/book/verify_book`, BookVerifyPayload);
-    console.log(res);
-    return res.code;
+    return res;
 }
 
 export { postVerifyBook };
