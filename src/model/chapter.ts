@@ -4,6 +4,8 @@ type Chapter = {
     author_id: number,
     author_name: string,
     platform: string,
+    uploader_id: number,
+    uploader_name: String,
     roll_id: number,
     roll_name: string,
     chapter_id: number,

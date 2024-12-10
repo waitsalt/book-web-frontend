@@ -21,13 +21,38 @@ const bookCreateInfo = ref<BookCreateInfo>({
     book_status: '',
 });
 const verifyBookEvent = async () => {
-    let res = await postVerifyBook({
-        author_name: bookCreateInfo.value.author_name,
-        book_name: bookCreateInfo.value.book_name,
-        platform: bookCreateInfo.value.platform,
-    });
-    if (res.code === 200) {
-        disabledNext.value = false;
+    try {
+        let res = await postVerifyBook({
+            author_name: bookCreateInfo.value.author_name,
+            book_name: bookCreateInfo.value.book_name,
+            platform: bookCreateInfo.value.platform,
+        });
+        switch (res.code) {
+            case 200:
+                addNotification({
+                    type: "success",
+                    title: "验证成功",
+                    content: "书籍不存在，可以创建"
+                })
+                disabledNext.value = false;
+                break;
+
+            case 1201:
+                addNotification({
+                    type: "error",
+                    title: "验证失败",
+                    content: "书籍已存在，无法创建"
+                })
+
+            default:
+                break;
+        }
+    } catch {
+        addNotification({
+            type: "error",
+            title: "验证失败",
+            content: "没有与服务器连接"
+        })
     }
 }
 const disabledNext = ref(true);
@@ -92,10 +117,10 @@ const tabNext = () => {
                     <img :src="bookCreateInfo.cover_url" alt="Book Cover">
                 </div>
                 <div class="inputGroup">
-                    <label for="coverUrl">封面链接:</label>
-                    <input v-model="bookCreateInfo.cover_url" id="coverUrl" type="url" placeholder="输入封面链接" />
                     <label for="sourceUrl">来源链接:</label>
                     <input v-model="bookCreateInfo.source_url" id="sourceUrl" type="url" placeholder="输入来源链接" />
+                    <label for="coverUrl">封面链接:</label>
+                    <input v-model="bookCreateInfo.cover_url" id="coverUrl" type="url" placeholder="输入封面链接" />
                 </div>
             </div>
             <div class="formGroup">
@@ -123,7 +148,6 @@ const tabNext = () => {
         <!-- 上传书籍 - 补充内容 -->
         <div v-if="activeNav === 'bookAddContent'" class="bookAddContent">
             <h3>补充内容</h3>
-            <!-- 可以根据需要添加具体内容 -->
         </div>
     </div>
 </template>
