@@ -14,9 +14,23 @@ type Roll = {
 };
 
 type RollCreate = {
-    roll_id: number,
     roll_name: string,
-    chapter_list: ChapterCreate[],
+    chapter_create_list: ChapterCreate[],
 }
 
-export type { Roll, RollCreate };
+type RollCreatePayload = {
+    book_id: number,
+    book_name: string,
+    author_id: number,
+    author_name: string,
+    platform: string,
+    roll_id: number,
+    roll_name: string,
+    chapters_create: ChapterCreate[],
+}
+
+export type {
+    Roll,
+    RollCreate,
+    RollCreatePayload,
+};

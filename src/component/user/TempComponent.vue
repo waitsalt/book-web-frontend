@@ -41,7 +41,11 @@ type FileRoll = {
     roll_list: Roll[],
 }
 
-const bookContent = ref<BookContentCreate>({ roll_list: [] });
+const bookContent = ref<BookContentCreate>({
+    roll_list: [
+        { title: "正文", chapter_list: [{ title: "书籍说明", content: "", id: uuid() }], fold: true, id: uuid() },
+    ]
+});
 
 const bookContentInit = () => {
     bookContent.value = {
@@ -49,6 +53,7 @@ const bookContentInit = () => {
             { title: "正文", chapter_list: [{ title: "书籍说明", content: "", id: uuid() }], fold: true, id: uuid() },
         ],
     };
+    disableShow.value = true;
 };
 
 // 上传的文件
@@ -231,8 +236,12 @@ const addChapter = (rollIndex: number, chapterIndex: number) => {
     bookContent.value.roll_list[rollIndex].chapter_list.splice(chapterIndex + 1, 0, { title: "新加章", content: "", id: uuid() });
 }
 
+const editingChapterContent = ref('')
+const editingChapterIndex = ref([0, 0]);
 const editChapterContent = (rollIndex: number, chapterIndex: number) => {
-
+    enableShowContentTip.value = false;
+    editingChapterIndex.value = [rollIndex, chapterIndex];
+    editingChapterContent.value = bookContent.value.roll_list[rollIndex].chapter_list[chapterIndex].content
 }
 
 const disableShow = ref(true);
@@ -246,10 +255,22 @@ const createFromNew = () => {
     };
     disableShow.value = false;
 }
+
+const enableShowContentTip = ref(true);
+
+const saveBookContent = () => {
+    const str = JSON.stringify(bookContent.value);
+    const url = `data:,${str}`;
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'bookContent.json';
+    a.click();
+}
+
 </script>
 
 <template>
-    <div class="container">
+    <div class="bookAddContent">
         <div class="chooseWay" :class="{ hidden: !disableShow }">
             <div class="fileUploadContainer">
                 <div class="fileUpload">
@@ -360,37 +381,44 @@ const createFromNew = () => {
                 </VueDraggable>
             </div>
             <div class="chapterContentShow">
-                <div class="noChapterChoose">
+                <div class="noChapterChoose" :class="{ hidden: !enableShowContentTip }">
                     <h3>章节内容显示区</h3>
                     <p>点击目录以显示章节内容</p>
                 </div>
-                <div class="chapterEdit">
-                    <textarea class="chapterEditArea"></textarea>
+                <div class="chapterEdit" :class="{ hidden: enableShowContentTip }">
+                    <h3>{{ bookContent.roll_list[editingChapterIndex[0]].chapter_list[editingChapterIndex[1]].title }}
+                    </h3>
+                    <textarea class="chapterEditArea"
+                        v-model="bookContent.roll_list[editingChapterIndex[0]].chapter_list[editingChapterIndex[1]].content"></textarea>
                 </div>
             </div>
+        </div>
+        <div class="bookAction" :class="{ hidden: disableShow }">
+            <button @click="bookContentInit">清空</button>
+            <button @click="saveBookContent">保存</button>
+            <button>上传</button>
         </div>
     </div>
 </template>
 
 <style scoped>
-.container {
+.bookAddContent {
     font-family: Arial, sans-serif;
     padding: 20px;
-    max-width: 1200px;
-    /* margin: 0 auto; */
 }
 
 .chooseWay {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+
     margin: 0 auto;
     gap: 20px;
 }
 
-/* From Uiverse.io by Cksunandh */
 .fileUploadContainer {
     width: 50%;
-    max-width: 500px;
+    max-width: 400px;
 }
 
 .fileUpload {
@@ -581,5 +609,30 @@ const createFromNew = () => {
 .chapterContentShow p {
     color: #666;
     text-align: center;
+}
+
+.bookAction {
+    float: right;
+    padding: 10px;
+}
+
+.bookAction button {
+    margin-left: 10px;
+    padding: 10px;
+    width: 80px;
+    background-color: #bbdefb;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.bookAction button:hover {
+    background-color: #9ad0fc;
+}
+
+.chapterEdit textarea {
+    width: 100%;
+    height: 70vh;
+    font-size: 20px;
 }
 </style>

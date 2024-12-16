@@ -17,7 +17,8 @@ const error = ref<string | null>(null); // 错误信息
 onMounted(async () => {
     try {
         loading.value = true;
-        latestUpdateBooks.value = await getLatestUpdataBooks();
+        let res = await getLatestUpdataBooks();
+        latestUpdateBooks.value = res.data;
         bookInfoShow.value = latestUpdateBooks.value; // 默认显示最新更新
     } catch (err) {
         error.value = '加载数据失败，请稍后重试';
@@ -62,12 +63,10 @@ const switchTab = (tab: string) => {
     font-family: 'Arial', sans-serif;
 }
 
-/* 导航栏样式 */
 .homeNav {
     position: fixed;
     top: 70px;
     z-index: 100;
-    background-color: #ffffff;
     display: flex;
     justify-content: space-around;
     border-radius: 50px;

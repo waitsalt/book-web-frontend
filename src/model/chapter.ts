@@ -15,12 +15,19 @@ type Chapter = {
     update_time: string,
 };
 
-type ChapterInfo = {
-    chapter_id: number,
+type ChapterCreate = {
     chapter_name: string,
+    chapter_content: string,
 }
 
-type ChapterCreate = {
+type ChapterCreatePayload = {
+    book_id: number,
+    book_name: string,
+    author_id: number,
+    author_name: string,
+    platform: string,
+    roll_id: number,
+    roll_name: string,
     chapter_id: number,
     chapter_name: string,
     chapter_content: string,
@@ -28,6 +35,6 @@ type ChapterCreate = {
 
 export type {
     Chapter,
-    ChapterInfo,
-    ChapterCreate
+    ChapterCreate,
+    ChapterCreatePayload,
 };

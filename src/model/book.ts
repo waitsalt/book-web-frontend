@@ -42,7 +42,7 @@ type BookVerifyPayload = {
     platform: string,
 };
 
-type BookCreateInfo = {
+type BookCreateInfoPayload = {
     book_name: string,
     author_name: string,
     platform: string,
@@ -56,16 +56,16 @@ type BookCreateInfo = {
     book_status: string,
 }
 
-type BookCreate = {
-    book_create_info: BookCreateInfo,
-    rolls_create: RollCreate[],
+type BookCreatePayload = {
+    book_create_info_payload: BookCreateInfoPayload,
+    roll_create_list: RollCreate[],
 }
 
 export type {
     Book,
     BookInfo,
-    BookCreate,
-    BookCreateInfo,
+    BookCreatePayload,
+    BookCreateInfoPayload,
     BookSearchPayload,
     BookVerifyPayload,
 }
