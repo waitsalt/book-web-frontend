@@ -61,6 +61,34 @@ type BookCreatePayload = {
     roll_create_list: RollCreate[],
 }
 
+
+function BookInfoNew(): BookInfo {
+    return {
+        book_id: 0,
+        book_name: '',
+        author_id: -1,
+        author_name: '',
+        platform: '',
+        uploader_id: -1,
+        uploader_name: '',
+        manager_id: -1,
+        manager_name: '',
+        cover_url: '',
+        source_url: '',
+        book_tags: '',
+        book_desc: '',
+        book_class: '',
+        book_status: '',
+        latest_chapter_id: -1,
+        latest_chapter_name: '',
+        collect: -1,
+        recommend: -1,
+        read_time: -1,
+        create_time: '',
+        update_time: '',
+    }
+}
+
 export type {
     Book,
     BookInfo,
@@ -68,4 +96,8 @@ export type {
     BookCreateInfoPayload,
     BookSearchPayload,
     BookVerifyPayload,
+}
+
+export {
+    BookInfoNew,
 }

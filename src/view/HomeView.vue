@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
 import { getMostCollectBooks } from '@/api/book/mostCollectBooks';
-import BookComponent from '@/component/home/BookComponent.vue';
+import BookComponent from '@/component/BookComponent.vue';
 import { getLatestUpdataBooks } from '@/api/book/latestUpdataBooks';
 import { getMostRecommmendBooks } from '@/api/book/mostRecommmendBooks';
 import type { BookInfo } from '@/model/book';
@@ -13,6 +13,18 @@ const bookInfoShow = ref<BookInfo[]>([]);
 const activeTab = ref('latest'); // 当前选中标签
 const loading = ref(true); // 加载状态
 const error = ref<string | null>(null); // 错误信息
+
+// 切换标签方法
+const switchTab = (tab: string) => {
+    activeTab.value = tab;
+    if (tab === 'latest') {
+        bookInfoShow.value = latestUpdateBooks.value;
+    } else if (tab === 'collect') {
+        bookInfoShow.value = mostCollectBooks.value;
+    } else if (tab === 'recommend') {
+        bookInfoShow.value = mostRecommendBooks.value;
+    }
+};
 
 onMounted(async () => {
     try {
@@ -27,18 +39,6 @@ onMounted(async () => {
         loading.value = false;
     }
 });
-
-// 切换标签方法
-const switchTab = (tab: string) => {
-    activeTab.value = tab;
-    if (tab === 'latest') {
-        bookInfoShow.value = latestUpdateBooks.value;
-    } else if (tab === 'collect') {
-        bookInfoShow.value = mostCollectBooks.value;
-    } else if (tab === 'recommend') {
-        bookInfoShow.value = mostRecommendBooks.value;
-    }
-};
 </script>
 
 <template>
@@ -60,7 +60,6 @@ const switchTab = (tab: string) => {
 <style scoped>
 .home-container {
     background-color: #f2f2f8;
-    font-family: 'Arial', sans-serif;
 }
 
 .homeNav {

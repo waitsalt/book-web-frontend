@@ -16,8 +16,8 @@ const bookCreateInfoPayload = ref<BookCreateInfoPayload>({
     source_url: '',
     book_tags: '',
     book_desc: '',
-    book_class: '',
-    book_status: '',
+    book_class: '轻小说',
+    book_status: '连载',
 });
 
 const tabList = ref(['bookVerify', 'bookAddInfo', 'bookAddContent']);
@@ -438,11 +438,30 @@ const uploadBook = async () => {
             </div>
             <div class="formGroup">
                 <label for="bookClass">类别:</label>
-                <input v-model="bookCreateInfoPayload.book_class" id="bookClass" type="text" placeholder="输入书籍类别" />
+                <select v-model="bookCreateInfoPayload.book_class" id="bookClass" type="text" placeholder="输入书籍类别">
+                    <option value="玄幻">玄幻</option>
+                    <option value="奇幻">奇幻</option>
+                    <option value="武侠">武侠</option>
+                    <option value="仙侠">仙侠</option>
+                    <option value="都市">都市</option>
+                    <option value="现实">现实</option>
+                    <option value="军事">军事</option>
+                    <option value="历史">历史</option>
+                    <option value="游戏">游戏</option>
+                    <option value="体育">体育</option>
+                    <option value="科幻">科幻</option>
+                    <option value="无限">无限</option>
+                    <option value="悬疑">悬疑</option>
+                    <option value="轻小说">轻小说</option>
+                </select>
             </div>
             <div class="formGroup">
                 <label for="bookStatus">状态:</label>
-                <input v-model="bookCreateInfoPayload.book_status" id="bookStatus" type="text" placeholder="输入书籍状态" />
+                <select v-model="bookCreateInfoPayload.book_status" id="bookStatus">
+                    <option value="连载">连载</option>
+                    <option value="完结">完结</option>
+                    <option value="断更">断更</option>
+                </select>
             </div>
             <div class="buttonGroup">
                 <button class="submitBtn" :disabled="disabledNext" @click="tabNext">下一步</button>
@@ -688,7 +707,8 @@ const uploadBook = async () => {
 
 input[type="text"],
 input[type="url"],
-textarea {
+textarea,
+select {
     width: 100%;
     padding: 10px;
     font-size: 16px;
@@ -700,7 +720,8 @@ textarea {
 
 input[type="text"]:focus,
 input[type="url"]:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
     outline: none;
     border-color: #00a1d6;
 }

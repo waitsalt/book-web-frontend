@@ -2,27 +2,31 @@
 import type { BookInfo } from '@/model/book';
 import router from '@/util/router';
 
-const { bookInfo } = defineProps<{ bookInfo: BookInfo }>()
+const { bookInfo } = defineProps<{ bookInfo: BookInfo }>();
 
 const gotoBook = () => {
     router.push(`/book/${bookInfo.book_id}`);
-}
+};
 </script>
 
 <template>
     <div class="book-card" @click="gotoBook">
         <div class="cover">
-            <img :src="bookInfo.cover_url" alt="Book Cover">
+            <img :src="bookInfo.cover_url" alt="Book Cover" loading="lazy">
         </div>
         <div class="book-details">
             <h3 class="book-name">{{ bookInfo.book_name }}</h3>
             <div class="book-meta">
                 <span class="author">{{ bookInfo.author_name }}</span>
-                <span class="platform">平台: {{ bookInfo.platform }}</span>
-                <span class="status">状态: {{ bookInfo.book_status }}</span>
+                <span class="platform">{{ bookInfo.platform }}</span>
+                <span :class="['status', bookInfo.book_status.toLowerCase()]">
+                    {{ bookInfo.book_status }}
+                </span>
             </div>
             <div class="tags">
-                <span v-for="tag in bookInfo.book_tags.split(' ')" :key="tag" class="tag">{{ tag }}</span>
+                <span v-for="tag in bookInfo.book_tags.split(' ')" :key="tag" class="tag">
+                    {{ tag }}
+                </span>
             </div>
             <p class="book-desc">{{ bookInfo.book_desc }}</p>
         </div>
@@ -31,24 +35,26 @@ const gotoBook = () => {
 
 <style scoped>
 .book-card {
-    display: flex;
-    width: 400px;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    width: 100%;
+    max-width: 400px;
     padding: 10px;
-    border-radius: 15px;
+    border-radius: 12px;
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
     overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .book-card:hover {
-    background-color: #d8d8e1;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .cover {
-    width: 140px;
-    height: 210px;
-    margin-right: 16px;
+    width: 120px;
+    height: 180px;
     overflow: hidden;
     border-radius: 8px;
     background-color: #ccc;
@@ -61,48 +67,39 @@ const gotoBook = () => {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    border-radius: 8px;
 }
 
 .book-details {
-    flex-grow: 1;
     display: flex;
     flex-direction: column;
+    gap: 8px;
 }
 
 .book-name {
     font-size: 1.2rem;
-    font-weight: 600;
-    color: #333;
+    font-weight: bold;
+    margin: 0;
 }
 
 .book-meta {
     display: flex;
     gap: 10px;
-    margin-bottom: 5px;
-}
-
-.author,
-.platform,
-.status {
     font-size: 0.9rem;
-    color: #777;
 }
 
 .book-desc {
     font-size: 0.9rem;
-    color: #555;
-    margin-bottom: 8px;
+    line-height: 1.4;
 }
 
 .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 4px;
 }
 
 .tag {
-    background-color: #d6d6d6;
-    color: #333;
     padding: 4px 8px;
     border-radius: 8px;
     font-size: 0.8rem;
